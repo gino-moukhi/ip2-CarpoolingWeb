@@ -1,0 +1,107 @@
+<div class="row">
+
+  <div class="col-md-6 col-md-offset-2">
+    <h1>Profile</h1>
+    <form [formGroup]="profileForm">
+      <h5>Credentials</h5>
+      <div class="form-group">
+        <label for="email">Email address:</label>
+        <input type="email" class="form-control" formControlName="email" id="email" [readonly]="isReading">
+      </div>
+
+      <div class="form-group">
+        <label for="pwd">Password:</label>
+        <input type="password" class="form-control" formControlName="password" id="pwd" [readonly]="isReading">
+      </div>
+
+      <h5>General</h5>
+      <div class="form-group">
+        <label for="firstName">Firstname:</label>
+        <input type="text" class="form-control" formControlName="firstName" id="firstName" [readonly]="isReading">
+      </div>
+
+      <div class="form-group">
+        <label for="lastName">Lastname:</label>
+        <input type="text" class="form-control" formControlName="lastName" id="lastName" [readonly]="isReading">
+      </div>
+
+      <div class="form-group">
+        <label for="age">Age:</label>
+        <input type="number" class="form-control" formControlName="age" id="age" [readonly]="isReading">
+      </div>
+
+      <div class="form-group">
+        <label for="genderMale">Gender:</label>
+        <input type="radio" class="form-control" formControlName="gender" id="genderMale" name="gender" value="MALE"
+               [readonly]="isReading"> Male
+        <input type="radio" class="form-control" formControlName="gender" id="genderFemale" name="gender" value="FEMALE"
+               [readonly]="isReading"> Female
+      </div>
+
+      <div class="form-group">
+        <label for="smokerYes">Smoker:</label>
+        <input type="radio" class="form-control" formControlName="smoker" id="smokerYes" name="smoker" [value]="true"
+               [readonly]="isReading"> Yes
+        <input type="radio" class="form-control" formControlName="smoker" id="smokerNo" name="smoker" [value]="false"
+               [readonly]="isReading"> No
+      </div>
+
+      <h5>Address</h5>
+      <div class="form-group">
+        <label for="streetName">Streetname:</label>
+        <input type="text" class="form-control" formControlName="streetName" id="streetName" [readonly]="isReading">
+      </div>
+
+      <div class="form-group">
+        <label for="streetNumber">Streetnumber:</label>
+        <input type="number" class="form-control" formControlName="streetNumber" id="streetNumber"
+               [readonly]="isReading">
+      </div>
+
+      <div class="form-group">
+        <label for="zipCode">Zipcode:</label>
+        <input type="number" class="form-control" formControlName="zipCode" id="zipCode" [readonly]="isReading">
+      </div>
+
+      <div class="form-group">
+        <label for="city">City:</label>
+        <input type="text" class="form-control" formControlName="city" id="city" [readonly]="isReading">
+      </div>
+
+      <h5>Vehicle</h5>
+      <div class="form-group">
+        <label for="brand">Brand:</label>
+        <input type="text" class="form-control" formControlName="brand" id="brand" [readonly]="isReading">
+      </div>
+
+      <div class="form-group">
+        <label for="type">Type:</label>
+        <!--<input type="text" class="form-control" formControlName="type" id="type" [readonly]="isReading">-->
+        <select id="type" class="form-control" formControlName="type" >
+          <option *ngFor="let key of keys" [value]="key" [label]="types[key]"></option>
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="fuel">Fuel consumption:</label>
+        <input type="number" class="form-control" formControlName="fuel" id="fuel" [readonly]="isReading">
+      </div>
+
+      <div class="form-group">
+        <label for="passengers">Passengers:</label>
+        <input type="number" class="form-control" formControlName="passengers" id="passengers" [readonly]="isReading">
+      </div>
+
+      <div id="enableEditing">
+        <button class="btn btn-primary" (click)="enableEditing()">Edit profile</button>
+      </div>
+      <div *ngIf="isReading == false">
+        <button class="btn btn-primary" (click)="changeUser()" type="submit">Change</button>
+        <button class="btn btn-danger" type="submit">Cancel</button>
+      </div>
+    </form>
+    <div class="text-center">
+      <p class="largerP">{{message}}</p>
+    </div>
+  </div>
+</div>

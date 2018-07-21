@@ -1,0 +1,7 @@
+<button id="switchFormType" (click)="onFormChange()">{{buttonText}}</button>
+<div *ngIf="login">
+  <app-login></app-login>
+</div>
+<div *ngIf="register">
+  <app-register></app-register>
+</div>

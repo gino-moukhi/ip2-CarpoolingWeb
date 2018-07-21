@@ -1,0 +1,7 @@
+<div #profile (click)=profileClick()>
+  <p (click)=profileClick()>My profile!</p>
+</div>
+
+<div class="Main col-md-9" [ngSwitch]="page">
+  <app-profile *ngSwitchCase="'profile'" [receivedUser]="currentUser" (userChanged)="onUserChanged($event)"></app-profile>
+</div>
