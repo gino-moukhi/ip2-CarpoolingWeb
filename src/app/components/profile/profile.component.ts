@@ -1,11 +1,11 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
-import {User} from '../../models/user';
-import {Name} from '../../models/name';
-import {Address} from '../../models/address';
-import {Vehicle} from '../../models/vehicle';
+import {User} from '../../models/user/user';
+import {Name} from '../../models/user/name';
+import {Address} from '../../models/user/address';
+import {Vehicle} from '../../models/user/vehicle';
 import {UserService} from '../../services/user.service';
-import {VehicleType} from '../../models/vehicle-type.enum';
+import {VehicleType} from '../../models/user/vehicle-type.enum';
 
 @Component({
   selector: 'app-profile',

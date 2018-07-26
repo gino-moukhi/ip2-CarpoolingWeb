@@ -2,9 +2,9 @@ import {Component, OnInit} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {UserService} from '../../services/user.service';
-import {User} from '../../models/user';
-import {Name} from '../../models/name';
-import {Address} from '../../models/address';
+import {User} from '../../models/user/user';
+import {Name} from '../../models/user/name';
+import {Address} from '../../models/user/address';
 
 @Component({
   selector: 'app-register',

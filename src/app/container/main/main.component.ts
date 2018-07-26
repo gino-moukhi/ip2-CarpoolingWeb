@@ -1,9 +1,9 @@
 import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
-import {User} from '../../models/user';
+import {User} from '../../models/user/user';
 import {UserService} from '../../services/user.service';
-import {Name} from '../../models/name';
-import {Address} from '../../models/address';
-import {Vehicle} from '../../models/vehicle';
+import {Name} from '../../models/user/name';
+import {Address} from '../../models/user/address';
+import {Vehicle} from '../../models/user/vehicle';
 
 @Component({
   selector: 'app-main',
@@ -14,6 +14,7 @@ export class MainComponent implements OnInit {
   currentUser: User;
   // activeItem: any;
   profile: boolean;
+  carpool: boolean;
   page: string;
   @ViewChild('profile') profileElement: ElementRef;
 
@@ -40,11 +41,18 @@ export class MainComponent implements OnInit {
   profileClick() {
     // this.changeActive(this.profileElement.nativeElement);
     this.profile = true;
+    this.carpool = false;
     this.page = 'profile';
 
   }
 
   onUserChanged($event: User) {
     this.currentUser = $event;
+  }
+
+  carpoolClick() {
+    this.profile = false;
+    this.carpool = true;
+    this.page = 'carpool';
   }
 }
