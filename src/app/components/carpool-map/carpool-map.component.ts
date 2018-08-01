@@ -1,12 +1,16 @@
-import {AfterViewInit, Component, ElementRef, NgZone, OnInit, ViewChild} from '@angular/core';
+import {Component, NgZone, OnInit} from '@angular/core';
 import {MapsAPILoader} from '@agm/core';
 import {} from '@types/googlemaps';
-import {InfoWindow} from '@agm/core/services/google-maps-types';
-import {RouteDirection} from '../../models/route/route-direction';
-import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup} from '@angular/forms';
+import {RouteDefinition} from '../../models/route/route-definition';
+import {AbstractControl, FormArray, FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {RouteLocation} from '../../models/route/route-location';
-import {RouteWaypoint} from '../../models/route/route-waypoint';
 import PlaceResult = google.maps.places.PlaceResult;
+import {RouteService} from '../../services/route.service';
+import {RouteComplete} from '../../models/route/route-complete';
+import {UserService} from '../../services/user.service';
+import {User} from '../../models/user/user';
+import {RouteWaypoint} from '../../models/route/route-waypoint';
+import {RouteType} from '../../models/route/route-type.enum';
 
 declare var google: any;
 
@@ -21,9 +25,13 @@ export class CarpoolMapComponent implements OnInit {
   currentMapInstance: google.maps.Map;
   routeForm: FormGroup;
   trafficLayer: google.maps.TrafficLayer;
-  routeDirection: RouteDirection;
+  routeDefinition: RouteDefinition;
 
-  constructor(private fb: FormBuilder, private mapsAPILoader: MapsAPILoader, private ngZone: NgZone) {
+  allRoutes: RouteComplete[];
+  currentUser: User;
+
+  constructor(private fb: FormBuilder, private mapsAPILoader: MapsAPILoader, private ngZone: NgZone, private routeService: RouteService,
+              private userService: UserService) {
   }
 
   ngOnInit() {
@@ -31,14 +39,32 @@ export class CarpoolMapComponent implements OnInit {
       origin: new FormGroup({
         name: new FormControl(),
         location: new FormControl()
-      }),
+      }, Validators.required),
       destination: new FormGroup({
         name: new FormControl(),
         location: new FormControl()
-      }),
+      }, Validators.required),
+      routeType: new FormControl(Validators.required),
       waypoints: this.fb.array([this.initWaypointFields()])
     });
-    this.setCurrentPosition();
+
+    this.home = new RouteLocation('', 0, 0);
+    // this.setCurrentPosition();
+    this.routeService.getRoutes().subscribe(value => {
+      // this.allRoutes = value;
+      console.log(this.allRoutes);
+      console.log('val');
+      console.log(value);
+    });
+    this.routeService.getRouteById('5b5f64efd3303d23c8700281').subscribe(value => {
+      console.log('val');
+      console.log(value);
+    });
+
+    this.userService.getUserById(sessionStorage.getItem('currentUser')).subscribe(value => {
+      this.currentUser = value;
+      console.log(this.currentUser);
+    });
   }
 
   private initWaypointFields(): FormGroup {
@@ -51,7 +77,10 @@ export class CarpoolMapComponent implements OnInit {
   private setCurrentPosition() {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
-        this.home = new RouteLocation(position.coords.latitude, position.coords.longitude);
+        console.log('1');
+        console.log(this.home);
+        this.home = new RouteLocation('', position.coords.latitude, position.coords.longitude);
+        console.log('2');
         console.log(this.home);
       });
     }
@@ -69,8 +98,11 @@ export class CarpoolMapComponent implements OnInit {
   onMapReady(mapInstance) {
     this.currentMapInstance = mapInstance;
     this.setCurrentPosition();
-    this.currentMapInstance.setCenter(new google.maps.LatLng(this.home.lat, this.home.lng));
+    // this.currentMapInstance.setCenter(new google.maps.LatLng(this.home.lat, this.home.lng));
+    console.log('3');
+    console.log(this.home);
     this.trafficLayer = new google.maps.TrafficLayer();
+    console.log('4');
     console.log(this.home);
   }
 
@@ -85,8 +117,6 @@ export class CarpoolMapComponent implements OnInit {
   }
 
   autoCompleter(event) {
-    console.log(event.target);
-
     this.mapsAPILoader.load().then(() => {
       const autoComplete = new google.maps.places.Autocomplete(event.target);
       autoComplete.addListener('place_changed', () => {
@@ -97,33 +127,14 @@ export class CarpoolMapComponent implements OnInit {
           }
           if (event.target.id === 'origin') {
             const control = this.routeForm.controls.origin;
-            /*console.log(control);
-            const origin = {
-              name: place.formatted_address,
-              location: new RouteLocation(place.geometry.location.lat(), place.geometry.location.lng())
-            };
-            control.setValue(origin);*/
             this.setFormValue(place, control, event.target.id);
 
           } else if (event.target.id === 'destination') {
             const control = this.routeForm.controls.destination;
-            /*const destination = {
-              name: place.formatted_address,
-              location: new RouteLocation(place.geometry.location.lat(), place.geometry.location.lng())
-            };
-            control.setValue(destination);*/
             this.setFormValue(place, control, event.target.id);
 
           } else if (event.target.id.includes('wp')) {
             const controls = <FormArray>this.routeForm.controls.waypoints;
-            /*const splits = event.target.id.split('.');
-            const controls = <FormArray>this.routeForm.controls.waypoints;
-            const control = controls.controls[splits[1]];
-            const wp = {
-              name: place.formatted_address,
-              waypoint: new RouteWaypoint(new RouteLocation(place.geometry.location.lat(), place.geometry.location.lng()), true)
-            };
-            control.setValue(wp);*/
             this.setFormValue(place, controls, event.target.id);
           }
         });
@@ -132,28 +143,51 @@ export class CarpoolMapComponent implements OnInit {
   }
 
   createRoute() {
-    const data = [];
+    if (this.routeForm.invalid) {
+      return;
+    }
+    const completeWaypoints = [];
     const wps = <FormArray>this.routeForm.controls.waypoints;
     console.log(wps);
+    const waypointsAsLocation = [];
     for (let i = 0; i < wps.length; i++) {
-      console.log(wps.value[i].waypoint);
       if (wps.value[i].waypoint !== null) {
-        data.push(wps.value[i].waypoint);
+        completeWaypoints.push(wps.value[i].waypoint);
+        const loc = {
+          name: wps.value[i].waypoint.location.name,
+          lat: wps.value[i].waypoint.location.lat,
+          lng: wps.value[i].waypoint.location.lng,
+        };
+        waypointsAsLocation.push(loc);
       }
     }
-    console.log(data);
+    console.log(completeWaypoints);
+    console.log(waypointsAsLocation);
 
-    this.routeDirection = new RouteDirection(this.routeForm.controls.origin.value.location,
-      this.routeForm.controls.destination.value.location, data);
+    this.routeDefinition = new RouteDefinition(this.routeForm.controls.origin.value.location,
+      this.routeForm.controls.destination.value.location, this.routeForm.controls.routeType.value, completeWaypoints);
 
-    if (!this.routeDirection.origin) {
+    if (!this.routeDefinition.origin) {
       console.log('please enter a start location to complete the route');
-    } else if (!this.routeDirection.destination) {
+    } else if (!this.routeDefinition.destination) {
       console.log('please enter a destination to complete the route');
+    } else if (this.routeForm.controls.routeType.untouched) {
+      console.log('please pick a route type (single or return)');
     } else {
       this.completeRoute = true;
     }
-    console.log(this.routeDirection);
+
+    console.log(this.routeDefinition);
+    if (this.completeRoute) {
+      const routeDefinitionForBackEnd = new RouteDefinition(this.routeDefinition.origin, this.routeDefinition.destination,
+        this.routeForm.controls.routeType.value, waypointsAsLocation);
+
+      console.log(routeDefinitionForBackEnd);
+      const complete = new RouteComplete(routeDefinitionForBackEnd, this.currentUser.vehicle.type, new Date(),
+        this.currentUser.vehicle.numberOfPassengers);
+      console.log(complete);
+      this.routeService.createRoute(complete).subscribe();
+    }
   }
 
   clearRoute() {
@@ -161,11 +195,12 @@ export class CarpoolMapComponent implements OnInit {
 
     const wps = <FormArray>this.routeForm.controls.waypoints;
 
-    this.routeDirection = null;
+    // this.routeDirection = null;
     this.routeForm.controls.origin.value.name = null;
     this.routeForm.controls.origin.value.location = null;
     this.routeForm.controls.destination.value.name = null;
     this.routeForm.controls.destination.value.location = null;
+    this.routeForm.controls.routeType.setValue(null);
 
     for (let i = 0; i < wps.length; i++) {
       /*wps.value[i].name = null;
@@ -177,7 +212,7 @@ export class CarpoolMapComponent implements OnInit {
     }
 
     console.log(this.routeForm);
-    console.log(this.routeDirection);
+    console.log(this.routeDefinition);
     console.log(this.completeRoute);
   }
 
@@ -188,7 +223,7 @@ export class CarpoolMapComponent implements OnInit {
     if (control instanceof FormGroup) {
       data = {
         name: place.formatted_address,
-        location: new RouteLocation(place.geometry.location.lat(), place.geometry.location.lng())
+        location: new RouteLocation(place.formatted_address, place.geometry.location.lat(), place.geometry.location.lng())
       };
       control.setValue(data);
     } else if (control instanceof FormArray) {
@@ -196,7 +231,11 @@ export class CarpoolMapComponent implements OnInit {
       wpControl = control.controls[splits[1]];
       data = {
         name: place.formatted_address,
-        waypoint: new RouteWaypoint(new RouteLocation(place.geometry.location.lat(), place.geometry.location.lng()), true)
+        /*waypoint: new RouteLocation(place.formatted_address, place.geometry.location.lat(),
+          place.geometry.location.lng())*/
+        // must make use of RouteWaypoint because the used api's require a location property (and optionally a stopover boolean)
+        waypoint: new RouteWaypoint(new RouteLocation(place.formatted_address, place.geometry.location.lat(),
+          place.geometry.location.lng()), true)
       };
       wpControl.setValue(data);
     }
