@@ -1,10 +1,12 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, EventEmitter, OnInit, Output} from '@angular/core';
 import {FormBuilder, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {UserService} from '../../services/user.service';
 import {User} from '../../models/user/user';
 import {Name} from '../../models/user/name';
 import {Address} from '../../models/user/address';
+import {Vehicle} from '../../models/user/vehicle';
+import {VehicleType} from '../../models/user/vehicle-type.enum';
 
 @Component({
   selector: 'app-register',
@@ -12,6 +14,7 @@ import {Address} from '../../models/user/address';
   styleUrls: ['./register.component.css']
 })
 export class RegisterComponent implements OnInit {
+  @Output() registerViewChanged: EventEmitter<boolean> = new EventEmitter<boolean>();
   newUser: User;
   registerForm: FormGroup;
   submitted = false;
@@ -21,11 +24,6 @@ export class RegisterComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userService.getUsers()
-      .subscribe(data => {
-        console.log(data);
-      });
-
     this.registerForm = this.formBuilder.group({
       email: ['', Validators.required],
       password: ['', Validators.required],
@@ -51,9 +49,13 @@ export class RegisterComponent implements OnInit {
       console.log('CALLING CREATE USER');
       this.userService.createUser(this.newUser)
         .subscribe(() => {
-          this.router.navigate(['login']);
+          this.onRegisterViewChanged();
         });
     }
+  }
+
+  onRegisterViewChanged() {
+    this.registerViewChanged.emit(true);
   }
 
   private fillUser() {
@@ -70,5 +72,13 @@ export class RegisterComponent implements OnInit {
     this.newUser.address.city = this.registerForm.controls['city'].value;
     this.newUser.age = this.registerForm.controls['age'].value;
     this.newUser.gender = this.registerForm.controls['gender'].value;
+
+    // DEFAULT VALUES TO COMPLETE USER
+    this.newUser.vehicle = new Vehicle();
+    this.newUser.vehicle.brand = '';
+    this.newUser.vehicle.type = VehicleType.SEDAN;
+    this.newUser.vehicle.fuelConsumption = 0.0;
+    this.newUser.vehicle.numberOfPassengers = 0;
+    this.newUser.smoker = false;
   }
 }

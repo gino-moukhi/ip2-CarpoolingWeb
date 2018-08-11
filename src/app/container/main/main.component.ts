@@ -15,6 +15,7 @@ export class MainComponent implements OnInit {
   // activeItem: any;
   profile: boolean;
   carpool: boolean;
+  routeFinder: boolean;
   page: string;
   @ViewChild('profile') profileElement: ElementRef;
 
@@ -42,6 +43,7 @@ export class MainComponent implements OnInit {
     // this.changeActive(this.profileElement.nativeElement);
     this.profile = true;
     this.carpool = false;
+    this.routeFinder = false;
     this.page = 'profile';
 
   }
@@ -53,6 +55,14 @@ export class MainComponent implements OnInit {
   carpoolClick() {
     this.profile = false;
     this.carpool = true;
+    this.routeFinder = false;
     this.page = 'carpool';
+  }
+
+  routeFinderClick() {
+    this.profile = false;
+    this.carpool = false;
+    this.routeFinder = true;
+    this.page = 'routeFinder';
   }
 }

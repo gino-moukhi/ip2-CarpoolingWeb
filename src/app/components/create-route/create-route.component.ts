@@ -11,15 +11,16 @@ import {UserService} from '../../services/user.service';
 import {User} from '../../models/user/user';
 import {RouteWaypoint} from '../../models/route/route-waypoint';
 import {RouteType} from '../../models/route/route-type.enum';
+import {RouteUser} from '../../models/route/route-user';
 
 declare var google: any;
 
 @Component({
   selector: 'app-carpool-map',
-  templateUrl: './carpool-map.component.html',
-  styleUrls: ['./carpool-map.component.css']
+  templateUrl: './create-route.component.html',
+  styleUrls: ['./create-route.component.css']
 })
-export class CarpoolMapComponent implements OnInit {
+export class CreateRouteComponent implements OnInit {
   home: RouteLocation;
   completeRoute = false;
   currentMapInstance: google.maps.Map;
@@ -27,7 +28,7 @@ export class CarpoolMapComponent implements OnInit {
   trafficLayer: google.maps.TrafficLayer;
   routeDefinition: RouteDefinition;
 
-  allRoutes: RouteComplete[];
+  // allRoutes: RouteComplete[];
   currentUser: User;
 
   constructor(private fb: FormBuilder, private mapsAPILoader: MapsAPILoader, private ngZone: NgZone, private routeService: RouteService,
@@ -50,16 +51,12 @@ export class CarpoolMapComponent implements OnInit {
 
     this.home = new RouteLocation('', 0, 0);
     // this.setCurrentPosition();
-    this.routeService.getRoutes().subscribe(value => {
+    /*this.routeService.getRoutes().subscribe(value => {
       // this.allRoutes = value;
       console.log(this.allRoutes);
       console.log('val');
       console.log(value);
-    });
-    this.routeService.getRouteById('5b5f64efd3303d23c8700281').subscribe(value => {
-      console.log('val');
-      console.log(value);
-    });
+    });*/
 
     this.userService.getUserById(sessionStorage.getItem('currentUser')).subscribe(value => {
       this.currentUser = value;
@@ -99,11 +96,7 @@ export class CarpoolMapComponent implements OnInit {
     this.currentMapInstance = mapInstance;
     this.setCurrentPosition();
     // this.currentMapInstance.setCenter(new google.maps.LatLng(this.home.lat, this.home.lng));
-    console.log('3');
-    console.log(this.home);
     this.trafficLayer = new google.maps.TrafficLayer();
-    console.log('4');
-    console.log(this.home);
   }
 
   createWaypoint() {
@@ -161,7 +154,9 @@ export class CarpoolMapComponent implements OnInit {
         waypointsAsLocation.push(loc);
       }
     }
+    console.log('complete');
     console.log(completeWaypoints);
+    console.log('as location');
     console.log(waypointsAsLocation);
 
     this.routeDefinition = new RouteDefinition(this.routeForm.controls.origin.value.location,
@@ -183,37 +178,54 @@ export class CarpoolMapComponent implements OnInit {
         this.routeForm.controls.routeType.value, waypointsAsLocation);
 
       console.log(routeDefinitionForBackEnd);
-      const complete = new RouteComplete(routeDefinitionForBackEnd, this.currentUser.vehicle.type, new Date(),
-        this.currentUser.vehicle.numberOfPassengers);
+      const currentRouteUser = new RouteUser(this.currentUser);
+      const complete = new RouteComplete(null, routeDefinitionForBackEnd, currentRouteUser.vehicle.type, new Date(),
+        this.currentUser.vehicle.numberOfPassengers, currentRouteUser, [], []);
       console.log(complete);
-      this.routeService.createRoute(complete).subscribe();
+      // this.routeService.createRoute(complete).subscribe();
     }
   }
 
   clearRoute() {
     this.completeRoute = !this.completeRoute;
+    this.routeForm.reset();
 
     const wps = <FormArray>this.routeForm.controls.waypoints;
 
     // this.routeDirection = null;
-    this.routeForm.controls.origin.value.name = null;
+    /*this.routeForm.controls.origin.value.name = null;
     this.routeForm.controls.origin.value.location = null;
     this.routeForm.controls.destination.value.name = null;
     this.routeForm.controls.destination.value.location = null;
     this.routeForm.controls.routeType.setValue(null);
 
     for (let i = 0; i < wps.length; i++) {
-      /*wps.value[i].name = null;
-      wps.value[i].waypoint = null;*/
+      /!*wps.value[i].name = null;
+      wps.value[i].waypoint = null;*!/
       console.log(i);
       console.log(wps.length);
       this.removeWaypoint(i);
       console.log(this.routeForm.controls.waypoints);
-    }
+    }*/
 
     console.log(this.routeForm);
     console.log(this.routeDefinition);
     console.log(this.completeRoute);
+  }
+
+  swapLocations() {
+    const tempOrigin = {
+      name: this.routeForm.controls.origin.value.name,
+      location: this.routeForm.controls.origin.value.location
+    };
+    const tempDestination = {
+      name: this.routeForm.controls.destination.value.name,
+      location: this.routeForm.controls.destination.value.location
+    };
+    this.routeForm.controls.origin.reset();
+    this.routeForm.controls.destination.reset();
+    this.routeForm.controls.origin.setValue(tempDestination);
+    this.routeForm.controls.destination.setValue(tempOrigin);
   }
 
   private setFormValue(place: PlaceResult, control: AbstractControl, id: string) {

@@ -1,0 +1,96 @@
+<div *ngIf="!receivedRoutes">
+  <p>There are no routes to show at this time</p>
+</div>
+<div *ngIf="receivedRoutes">
+  <button (click)="addPassengerToRoute()">Add yourself to the route</button>
+  <div>
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>Origin</th>
+        <th>Destination</th>
+        <th>Departure time</th>
+        <th>#waypoints</th>
+        <th *ngIf="isMyRoutes">Actions</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr *ngFor="let route of receivedRoutes" (click)="onRouteClick(route)">
+        <td>{{route.routeDefinition.origin.name}}</td>
+        <td>{{route.routeDefinition.destination.name}}</td>
+        <td>{{route.departure}}</td>
+        <td>{{route.routeDefinition.waypoints.length}}</td>
+        <td *ngIf="isMyRoutes && route.owner.id == currentUser.id">
+          <button>Update</button>
+        </td>
+        <td *ngIf="isMyRoutes">
+          <!--<button [value]="route.owner.id == currentUser.id?'CANCEL':'STOP PARTICIPATING'">Delete</button>-->
+          <button>{{route.owner.id == currentUser.id?'CANCEL ROUTE':'LEAVE ROUTE'}}</button>
+        </td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div *ngIf="currentRoute">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th [attr.colspan]="3">General route info</th>
+      </tr>
+      <tr>
+        <th>Departure time</th>
+        <th>Vehicle type</th>
+        <th>Available passengers</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>{{currentRoute.departure}}</td>
+        <td>{{currentRoute.vehicleType}}</td>
+        <td>{{currentRoute.availablePassengers}}</td>
+      </tr>
+      </tbody>
+    </table>
+
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th [attr.colspan]="currentRoute.routeDefinition.waypoints.length + 4">Route definition info</th>
+      </tr>
+      <tr>
+        <th>Origin</th>
+        <th>Destination</th>
+        <th>Route type</th>
+        <th>Departure time</th>
+        <th *ngFor="let wp of currentRoute.routeDefinition.waypoints; let i = index">Waypoint {{i+1}}</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr>
+        <td>{{currentRoute.routeDefinition.origin.name}}</td>
+        <td>{{currentRoute.routeDefinition.destination.name}}</td>
+        <td>{{currentRoute.routeDefinition.routeType}}</td>
+        <td>{{currentRoute.departure}}</td>
+        <td *ngFor="let wp of currentRoute.routeDefinition.waypoints">{{wp.name}}</td>
+      </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+<div *ngIf="communicationFormIsOpen">
+  <app-communication-form [currentRouteId]="currentRoute.id" [currentUser]="currentUser"></app-communication-form>
+</div>
+<div *ngIf="currentRoute">
+  <agm-map [scrollwheel]="false">
+    <agm-direction #myDirection [origin]="currentRoute.routeDefinition.origin"
+                   [destination]="currentRoute.routeDefinition.destination"
+                   [waypoints]="currentWaypoints"
+                   [panel]="myPanel">
+
+    </agm-direction>
+  </agm-map>
+</div>
+<div #myPanel>
+
+</div>

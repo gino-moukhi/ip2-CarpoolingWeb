@@ -1,7 +1,7 @@
 <button id="switchFormType" (click)="onFormChange()">{{buttonText}}</button>
 <div *ngIf="login">
-  <app-login></app-login>
+  <app-login [allUsers]="allUsers"></app-login>
 </div>
 <div *ngIf="register">
-  <app-register></app-register>
+  <app-register (registerViewChanged)="onRegisterViewChanged($event)"></app-register>
 </div>

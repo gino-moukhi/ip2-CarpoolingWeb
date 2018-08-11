@@ -8,4 +8,8 @@ export class RouteLocation {
     this.lat = lat;
     this.lng = lng;
   }
+
+  public toString(): string {
+    return this.name + ',' + this.lat + ',' + this.lng;
+  }
 }

@@ -1,11 +1,15 @@
-<div #profile (click)=profileClick()>
-  <p (click)=profileClick()>My profile!</p>
+<div (click)=profileClick()>
+  <p>My profile</p>
 </div>
-<div #carpoolMap (click)=carpoolClick()>
-  <p (click)=carpoolClick()>Go Carpooling</p>
+<div (click)=carpoolClick()>
+  <p>Create a route</p>
+</div>
+<div (click)=routeFinderClick()>
+  <p>Find routes</p>
 </div>
 
 <div class="Main col-md-9" [ngSwitch]="page">
   <app-profile *ngSwitchCase="'profile'" [receivedUser]="currentUser" (userChanged)="onUserChanged($event)"></app-profile>
   <app-carpool-map *ngSwitchCase="'carpool'"></app-carpool-map>
+  <app-route-finder *ngSwitchCase="'routeFinder'"></app-route-finder>
 </div>

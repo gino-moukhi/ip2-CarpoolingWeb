@@ -1,3 +1,3 @@
 export enum VehicleType {
-  HATCHBAG = 'Hatchbag', SEDAN = 'Sedan', MPV = 'MPV', SUV = 'SUV', CROSSOVER = 'Crossover', COUPE = 'Coupe', CONVERTIBLE = 'Convertible'
+  HATCHBAG = 'HATCHBAG', SEDAN = 'SEDAN', MPV = 'MPV', SUV = 'SUV', CROSSOVER = 'CROSSOVER', COUPE = 'COUPE', CONVERTIBLE = 'CONVERTIBLE'
 }

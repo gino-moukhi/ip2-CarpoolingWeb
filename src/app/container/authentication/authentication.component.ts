@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import {UserService} from '../../services/user.service';
+import {User} from '../../models/user/user';
+import {VehicleType} from '../../models/user/vehicle-type.enum';
 
 @Component({
   selector: 'app-authentication',
@@ -9,10 +12,18 @@ export class AuthenticationComponent implements OnInit {
   login = false;
   register = true;
   buttonText = 'Login';
+  allUsers: User[];
 
-  constructor() { }
+  constructor(private userService: UserService) { }
 
   ngOnInit() {
+    this.userService.getUsers()
+      .subscribe(data => {
+        this.allUsers = data;
+        console.log(this.allUsers);
+      });
+
+    console.log(VehicleType.SEDAN);
   }
 
   onFormChange() {
@@ -23,5 +34,10 @@ export class AuthenticationComponent implements OnInit {
     } else {
       this.buttonText = 'Login';
     }
+  }
+
+  onRegisterViewChanged(event) {
+    this.login = event;
+    this.register = !event;
   }
 }

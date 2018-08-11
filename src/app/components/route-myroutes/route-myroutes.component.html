@@ -1,0 +1,27 @@
+<div *ngIf="currentRoute && currentRoute.communicationRequests.length != 0 && isOwner">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>Pick-up point</th>
+        <th>Drop-off point</th>
+        <th>Comment</th>
+        <th>Status</th>
+        <th colspan="2">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+    <tr *ngFor="let request of currentRoute.communicationRequests">
+      <td>{{request.origin.name}}</td>
+      <td>{{request.destination.name}}</td>
+      <td>{{request.comment}}</td>
+      <!--<td>{{showStatusAsString(request.requestStatus)}}</td>-->
+      <td>{{request.requestStatus}}</td>
+      <td><button (click)="handleRequestClick(request.id, acceptStatus)">Accept request</button></td>
+      <td><button (click)="handleRequestClick(request.id, declineStatus)">Decline request</button></td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+
+<app-route-detail [receivedRoutes]="receivedRoutes" [isMyRoutes]="true" (routeChanged)="onRoutesChanged($event)"
+                  (currentChildRoute)="onRouteChanged($event)"></app-route-detail>

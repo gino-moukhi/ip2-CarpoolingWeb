@@ -12,9 +12,13 @@ import {RegisterComponent} from './components/register/register.component';
 import {ProfileComponent} from './components/profile/profile.component';
 import {MainComponent} from './container/main/main.component';
 import {AuthenticationComponent} from './container/authentication/authentication.component';
-import { CarpoolMapComponent } from './components/carpool-map/carpool-map.component';
+import {CreateRouteComponent} from './components/create-route/create-route.component';
 import {AgmCoreModule} from '@agm/core';
 import {AgmDirectionModule} from 'agm-direction';
+import {RouteFinderComponent} from './components/route-finder/route-finder.component';
+import {RouteDetailComponent} from './components/route-detail/route-detail.component';
+import {CommunicationFormComponent} from './components/communication-form/communication-form.component';
+import { RouteMyroutesComponent } from './components/route-myroutes/route-myroutes.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +28,11 @@ import {AgmDirectionModule} from 'agm-direction';
     ProfileComponent,
     MainComponent,
     AuthenticationComponent,
-    CarpoolMapComponent,
+    CreateRouteComponent,
+    RouteFinderComponent,
+    RouteDetailComponent,
+    CommunicationFormComponent,
+    RouteMyroutesComponent,
   ],
   imports: [
     BrowserModule,
