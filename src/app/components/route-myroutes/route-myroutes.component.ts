@@ -1,9 +1,10 @@
-import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {RouteComplete} from '../../models/route/route-complete';
 import {CommunicationRequest} from '../../models/communication/communication-request';
 import {RouteLocation} from '../../models/route/route-location';
 import {CommunicationRequestStatus} from '../../models/communication/communication-request-status.enum';
 import {CommunicationService} from '../../services/communication.service';
+import {RouteDetailComponent} from '../route-detail/route-detail.component';
 
 @Component({
   selector: 'app-route-myroutes',
@@ -14,6 +15,7 @@ export class RouteMyroutesComponent implements OnInit {
   @Input() receivedRoutes: RouteComplete[];
   @Output() routeChanged: EventEmitter<RouteComplete[]> = new EventEmitter<RouteComplete[]>();
   @Output() currentChildRoute: EventEmitter<RouteComplete> = new EventEmitter<RouteComplete>();
+  @ViewChild(RouteDetailComponent) detailsComponent: RouteDetailComponent;
   allRoutes: RouteComplete[];
   currentRoute: RouteComplete;
   acceptStatus = CommunicationRequestStatus.ACCEPTED;
@@ -65,6 +67,7 @@ export class RouteMyroutesComponent implements OnInit {
       console.log(value);
       this.onRouteChanged(value);
       this.onRoutesChanged(value);
+      this.detailsComponent.refreshWaypoints();
     }, error1 => {
       console.log('ERROR');
       console.log(error1);

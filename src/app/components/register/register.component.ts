@@ -76,7 +76,7 @@ export class RegisterComponent implements OnInit {
     // DEFAULT VALUES TO COMPLETE USER
     this.newUser.vehicle = new Vehicle();
     this.newUser.vehicle.brand = '';
-    this.newUser.vehicle.type = VehicleType.SEDAN;
+    this.newUser.vehicle.type = VehicleType.NONE;
     this.newUser.vehicle.fuelConsumption = 0.0;
     this.newUser.vehicle.numberOfPassengers = 0;
     this.newUser.smoker = false;

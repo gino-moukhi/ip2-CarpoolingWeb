@@ -9,7 +9,7 @@
   </div>
 
   <div *ngSwitchCase="'allRoutes'">
-    <app-route-detail [receivedRoutes]="allRoutes" (routeChanged)="onRoutesChanged($event)" (currentChildRoute)="onRouteChanged($event)"></app-route-detail>
+    <app-route-detail [receivedRoutes]="allReceivedRoutes" (routeChanged)="onRoutesChanged($event)" (currentChildRoute)="onRouteChanged($event)"></app-route-detail>
   </div>
 
   <div *ngSwitchCase="'searchRoutes'">

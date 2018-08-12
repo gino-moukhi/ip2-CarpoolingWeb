@@ -27,6 +27,7 @@ export class RouteFinderComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private mapsAPILoader: MapsAPILoader, private ngZone: NgZone, private routeService: RouteService) {
     this.allRoutes = [];
+    this.allReceivedRoutes = [];
   }
 
   ngOnInit() {
@@ -49,12 +50,13 @@ export class RouteFinderComponent implements OnInit {
     });
 
     this.routeService.getRoutes().subscribe(value => {
-      value.forEach(route => {
-        /*const r = new RouteComplete(route.id, route.routeDefinition, route.departure, route.availablePassengers, route.owner,
+      /*value.forEach(route => {
+        const r = new RouteComplete(route.id, route.routeDefinition, route.departure, route.availablePassengers, route.owner,
           route.passengers, route.communicationRequests);
-        this.allRoutes.push(r);*/
-        this.allRoutes  = value;
-      });
+        this.allRoutes.push(r);
+      });*/
+      this.allRoutes  = value;
+      this.allReceivedRoutes  = value;
     });
   }
 

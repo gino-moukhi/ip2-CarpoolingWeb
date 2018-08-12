@@ -48,13 +48,18 @@ export class RouteDetailComponent implements OnInit, OnChanges {
 
   onRouteClick(route: RouteComplete) {
     this.currentRoute = route;
+    this.refreshWaypoints();
+    this.onRoutesChanged();
+    this.onRouteChanged();
+    this.calculateCurrentDistance(this.currentRoute);
+  }
+
+  refreshWaypoints() {
+    console.log('REFRESH CALLED');
     this.currentWaypoints = [];
     this.currentRoute.routeDefinition.waypoints.forEach(wp => {
       this.currentWaypoints.push(new RouteWaypoint(wp, true));
     });
-    this.onRoutesChanged();
-    this.onRouteChanged();
-    this.calculateCurrentDistance(this.currentRoute);
   }
 
   // TODO implement or disable

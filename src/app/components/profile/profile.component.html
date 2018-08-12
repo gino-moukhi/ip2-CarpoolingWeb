@@ -93,11 +93,11 @@
       </div>
 
       <div id="enableEditing">
-        <button class="btn btn-primary" (click)="enableEditing()">Edit profile</button>
+        <button class="btn btn-primary" (click)="enableEditing()">{{isReading?'Edit profile':'Cancel editing'}}</button>
       </div>
       <div *ngIf="isReading == false">
         <button class="btn btn-primary" (click)="changeUser()" type="submit">Change</button>
-        <button class="btn btn-danger" type="submit">Cancel</button>
+        <!--<button class="btn btn-danger" type="submit">Cancel</button>-->
       </div>
     </form>
     <div class="text-center">
