@@ -13,9 +13,7 @@ import {VehicleType} from '../../models/user/vehicle-type.enum';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-  @Input() public receivedUser: User;
-  @Output() userChanged: EventEmitter<User> = new EventEmitter<User>();
-
+  // receivedUser: User;
   profileForm: FormGroup;
   currentUser: User;
   isReading = true;
@@ -32,9 +30,9 @@ export class ProfileComponent implements OnInit {
     this.currentUser.name = new Name();
     this.currentUser.address = new Address();
     this.currentUser.vehicle = new Vehicle();
-    this.currentUser = this.receivedUser;
+    this.currentUser = /*this.receivedUser;*/ JSON.parse(sessionStorage.getItem('currentUser'));
     console.log(this.currentUser);
-    console.log(this.receivedUser);
+    // console.log(this.receivedUser);
 
     this.profileForm = this.formBuilder.group({
       email: [this.currentUser.email, Validators.required],
@@ -58,23 +56,19 @@ export class ProfileComponent implements OnInit {
     this.profileForm.get('type').disable();
   }
 
-  onUserChanged() {
-    this.userChanged.emit(this.currentUser);
-  }
-
   changeUser() {
     if (this.profileForm.valid) {
       this.currentUser = this.fillUserFromForm();
       console.log(this.currentUser);
       this.userService.updateUser(this.currentUser).subscribe(
         data => {
-          this.receivedUser = data;
+          // this.receivedUser = data;
+          this.currentUser = data;
           this.message = 'Your details were updated successfully';
-          this.onUserChanged();
           this.isReading = true;
           this.profileForm.get('type').disable();
         },
-        error => this.message = 'Oeps something went wrong while updating your details. Try again later!'
+        error => this.message = 'Oops something went wrong while updating your details. Try again later!'
       );
     }
   }
@@ -82,7 +76,7 @@ export class ProfileComponent implements OnInit {
   enableEditing() {
     if (!this.isReading) {
       console.log('resetting values');
-      this.currentUser = this.receivedUser;
+      // this.currentUser = this.receivedUser;
       this.profileForm.controls['email'].setValue(this.currentUser.email);
       this.profileForm.controls['password'].setValue(this.currentUser.password);
       this.profileForm.controls['firstName'].setValue(this.currentUser.name.firstName);
@@ -112,7 +106,8 @@ export class ProfileComponent implements OnInit {
     newUser.name = new Name();
     newUser.address = new Address();
     newUser.vehicle = new Vehicle();
-    newUser.id = this.receivedUser.id;
+    // newUser.id = this.receivedUser.id;
+    newUser.id = this.currentUser.id;
     newUser.email = this.profileForm.controls['email'].value;
     newUser.password = this.profileForm.controls['password'].value;
     newUser.name.firstName = this.profileForm.controls['firstName'].value;

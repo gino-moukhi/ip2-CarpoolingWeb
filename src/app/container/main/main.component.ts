@@ -1,55 +1,34 @@
-import {Component, ElementRef, OnInit, ViewChild} from '@angular/core';
+import { Component } from '@angular/core';
+import { BreakpointObserver, Breakpoints, BreakpointState } from '@angular/cdk/layout';
+import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 import {User} from '../../models/user/user';
-import {UserService} from '../../services/user.service';
-import {Name} from '../../models/user/name';
-import {Address} from '../../models/user/address';
-import {Vehicle} from '../../models/user/vehicle';
 
 @Component({
   selector: 'app-main',
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.css']
 })
-export class MainComponent implements OnInit {
+export class MainComponent {
   currentUser: User;
-  // activeItem: any;
   profile: boolean;
   carpool: boolean;
   routeFinder: boolean;
   page: string;
-  @ViewChild('profile') profileElement: ElementRef;
 
-  constructor(private userService: UserService) {
-  }
+  isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
+    .pipe(
+      map(result => result.matches)
+    );
 
-  ngOnInit() {
-    this.currentUser = new User();
-    this.currentUser.name = new Name();
-    this.currentUser.address = new Address();
-    this.currentUser.vehicle = new Vehicle();
-    this.userService.getUserById(sessionStorage.getItem('currentUser')).subscribe(data => {
-      this.currentUser = data;
-    });
-  }
-
-  /*changeActive(newActiveItem) {
-    this.activeItem.classList.remove('active');
-    this.activeItem = newActiveItem;
-    this.activeItem.classList.add('active');
-  }*/
-
+  constructor(private breakpointObserver: BreakpointObserver) {}
 
   profileClick() {
-    // this.changeActive(this.profileElement.nativeElement);
     this.profile = true;
     this.carpool = false;
     this.routeFinder = false;
     this.page = 'profile';
 
-  }
-
-  onUserChanged($event: User) {
-    this.currentUser = $event;
   }
 
   carpoolClick() {
@@ -65,4 +44,4 @@ export class MainComponent implements OnInit {
     this.routeFinder = true;
     this.page = 'routeFinder';
   }
-}
+  }

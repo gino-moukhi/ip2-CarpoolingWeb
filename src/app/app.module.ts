@@ -10,7 +10,6 @@ import {AuthenticationService} from './services/authentication.service';
 import {UserService} from './services/user.service';
 import {RegisterComponent} from './components/register/register.component';
 import {ProfileComponent} from './components/profile/profile.component';
-import {MainComponent} from './container/main/main.component';
 import {AuthenticationComponent} from './container/authentication/authentication.component';
 import {CreateRouteComponent} from './components/create-route/create-route.component';
 import {AgmCoreModule} from '@agm/core';
@@ -19,6 +18,10 @@ import {RouteFinderComponent} from './components/route-finder/route-finder.compo
 import {RouteDetailComponent} from './components/route-detail/route-detail.component';
 import {CommunicationFormComponent} from './components/communication-form/communication-form.component';
 import { RouteMyroutesComponent } from './components/route-myroutes/route-myroutes.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {AppMaterialModule} from './app.material-module';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MainComponent } from './container/main/main.component';
 
 @NgModule({
   declarations: [
@@ -26,13 +29,13 @@ import { RouteMyroutesComponent } from './components/route-myroutes/route-myrout
     LoginComponent,
     RegisterComponent,
     ProfileComponent,
-    MainComponent,
     AuthenticationComponent,
     CreateRouteComponent,
     RouteFinderComponent,
     RouteDetailComponent,
     CommunicationFormComponent,
     RouteMyroutesComponent,
+    MainComponent,
   ],
   imports: [
     BrowserModule,
@@ -43,7 +46,10 @@ import { RouteMyroutesComponent } from './components/route-myroutes/route-myrout
     AgmDirectionModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    AppMaterialModule,
+    LayoutModule,
   ],
   providers: [AuthenticationService, UserService],
   bootstrap: [AppComponent]

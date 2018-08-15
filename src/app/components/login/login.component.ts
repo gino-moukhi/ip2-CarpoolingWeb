@@ -26,8 +26,9 @@ export class LoginComponent implements OnInit {
     this.allUsers.forEach(user => {
       if (this.loginForm.controls.email.value === user.email && this.loginForm.controls.password.value === user.password) {
         console.log('USERS ARE THE SAME');
-        sessionStorage.setItem('currentUser', user.id);
+        sessionStorage.setItem('currentUser', JSON.stringify(user));
         this.router.navigate(['main']);
+        console.log(JSON.parse(sessionStorage.getItem('currentUser')));
       } else {
         this.invalidLogin = true;
       }
