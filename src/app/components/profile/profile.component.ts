@@ -1,5 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {User} from '../../models/user/user';
 import {Name} from '../../models/user/name';
 import {Address} from '../../models/user/address';
@@ -13,7 +13,6 @@ import {VehicleType} from '../../models/user/vehicle-type.enum';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
-  // receivedUser: User;
   profileForm: FormGroup;
   currentUser: User;
   isReading = true;
@@ -30,43 +29,62 @@ export class ProfileComponent implements OnInit {
     this.currentUser.name = new Name();
     this.currentUser.address = new Address();
     this.currentUser.vehicle = new Vehicle();
-    this.currentUser = /*this.receivedUser;*/ JSON.parse(sessionStorage.getItem('currentUser'));
+    this.currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
     console.log(this.currentUser);
-    // console.log(this.receivedUser);
 
     this.profileForm = this.formBuilder.group({
       email: [this.currentUser.email, Validators.required],
       password: [this.currentUser.password, Validators.required],
-      firstName: [this.currentUser.name.firstName, Validators.required],
-      lastName: [this.currentUser.name.lastName, Validators.required],
-      streetName: [this.currentUser.address.street, Validators.required],
-      streetNumber: [this.currentUser.address.streetNumber, Validators.required],
-      zipCode: [this.currentUser.address.zipCode, Validators.required],
-      city: [this.currentUser.address.city, Validators.required],
+      name: new FormGroup({
+        firstName: new FormControl(),
+        lastName: new FormControl()
+      }),
       age: [this.currentUser.age, Validators.required],
       gender: [this.currentUser.gender, Validators.required],
       smoker: [this.currentUser.smoker, Validators.required],
-      brand: [this.currentUser.vehicle.brand, Validators.required],
-      type: [this.currentUser.vehicle.type, Validators.required],
-      fuel: [this.currentUser.vehicle.fuelConsumption, Validators.required],
-      passengers: [this.currentUser.vehicle.numberOfPassengers, Validators.required]
+      address: new FormGroup({
+        street: new FormControl(),
+        streetNumber: new FormControl(),
+        zipCode: new FormControl(),
+        city: new FormControl()
+      }),
+      vehicle: new FormGroup({
+        brand: new FormControl(),
+        type: new FormControl(),
+        fuelConsumption: new FormControl(),
+        numberOfPassengers: new FormControl(),
+      }),
     });
-    console.log(this.profileForm.controls['type'].value);
-    console.log(this.currentUser.vehicle.type);
-    this.profileForm.get('type').disable();
+    this.profileForm.controls.name.setValue({
+      firstName: this.currentUser.name.firstName,
+      lastName: this.currentUser.name.lastName
+    });
+    this.profileForm.controls.address.setValue({
+      street: this.currentUser.address.street,
+      streetNumber: this.currentUser.address.streetNumber,
+      zipCode: this.currentUser.address.zipCode,
+      city: this.currentUser.address.city,
+    });
+    this.profileForm.controls.vehicle.setValue({
+      brand: this.currentUser.vehicle.brand,
+      type: this.currentUser.vehicle.type,
+      fuelConsumption: this.currentUser.vehicle.fuelConsumption,
+      numberOfPassengers: this.currentUser.vehicle.numberOfPassengers
+    });
+    this.profileForm.disable();
   }
 
-  changeUser() {
+  updateUser() {
     if (this.profileForm.valid) {
       this.currentUser = this.fillUserFromForm();
+      console.log('CURRENT USER');
       console.log(this.currentUser);
       this.userService.updateUser(this.currentUser).subscribe(
         data => {
-          // this.receivedUser = data;
           this.currentUser = data;
           this.message = 'Your details were updated successfully';
           this.isReading = true;
-          this.profileForm.get('type').disable();
+          sessionStorage.setItem('currentUser', JSON.stringify(this.currentUser));
         },
         error => this.message = 'Oops something went wrong while updating your details. Try again later!'
       );
@@ -74,40 +92,35 @@ export class ProfileComponent implements OnInit {
   }
 
   enableEditing() {
+    console.log(this.currentUser.smoker);
+    console.log(this.profileForm.controls.smoker.value);
     if (!this.isReading) {
-      console.log('resetting values');
-      // this.currentUser = this.receivedUser;
-      this.profileForm.controls['email'].setValue(this.currentUser.email);
-      this.profileForm.controls['password'].setValue(this.currentUser.password);
-      this.profileForm.controls['firstName'].setValue(this.currentUser.name.firstName);
-      this.profileForm.controls['lastName'].setValue(this.currentUser.name.lastName);
-      this.profileForm.controls['streetName'].setValue(this.currentUser.address.street);
-      this.profileForm.controls['streetNumber'].setValue(this.currentUser.address.streetNumber);
-      this.profileForm.controls['zipCode'].setValue(this.currentUser.address.zipCode);
-      this.profileForm.controls['city'].setValue(this.currentUser.address.city);
-      this.profileForm.controls['age'].setValue(this.currentUser.age);
-      this.profileForm.controls['gender'].setValue(this.currentUser.gender);
-      this.profileForm.controls['smoker'].setValue(this.currentUser.smoker);
-      this.profileForm.controls['brand'].setValue(this.currentUser.vehicle.brand);
-      this.profileForm.controls['type'].setValue(this.currentUser.vehicle.type);
-      this.profileForm.controls['fuel'].setValue(this.currentUser.vehicle.fuelConsumption);
-      this.profileForm.controls['passengers'].setValue(this.currentUser.vehicle.numberOfPassengers);
+      const originalUserWithoutId = {
+        email: this.currentUser.email,
+        password: this.currentUser.password,
+        name: this.currentUser.name,
+        age: this.currentUser.age,
+        gender: this.currentUser.gender,
+        smoker: this.currentUser.smoker,
+        address: this.currentUser.address,
+        vehicle: this.currentUser.vehicle,
+      };
+      this.profileForm.setValue(originalUserWithoutId);
     }
     this.isReading = !this.isReading;
-    if (this.profileForm.get('type').disabled) {
-      this.profileForm.get('type').enable();
+    if (this.profileForm.disabled) {
+      this.profileForm.enable();
     } else {
-      this.profileForm.get('type').disable();
+      this.profileForm.disable();
     }
   }
 
   private fillUserFromForm() {
-    const newUser: User = new User();
+    let newUser: User = new User();
     newUser.name = new Name();
     newUser.address = new Address();
     newUser.vehicle = new Vehicle();
-    // newUser.id = this.receivedUser.id;
-    newUser.id = this.currentUser.id;
+    /*newUser.id = this.currentUser.id;
     newUser.email = this.profileForm.controls['email'].value;
     newUser.password = this.profileForm.controls['password'].value;
     newUser.name.firstName = this.profileForm.controls['firstName'].value;
@@ -122,7 +135,25 @@ export class ProfileComponent implements OnInit {
     newUser.vehicle.brand = this.profileForm.controls['brand'].value;
     newUser.vehicle.type = this.profileForm.controls['type'].value;
     newUser.vehicle.fuelConsumption = this.profileForm.controls['fuel'].value;
-    newUser.vehicle.numberOfPassengers = this.profileForm.controls['passengers'].value;
+    newUser.vehicle.numberOfPassengers = this.profileForm.controls['passengers'].value;*/
+    const dataFromForm = {
+      id: this.currentUser.id,
+      email: this.profileForm.controls.email.value,
+      password: this.profileForm.controls.password.value,
+      name: this.profileForm.controls.name.value,
+      age: this.profileForm.controls.age.value,
+      gender: this.profileForm.controls.gender.value,
+      smoker: this.profileForm.controls.smoker.value,
+      address: this.profileForm.controls.address.value,
+      vehicle: this.profileForm.controls.vehicle.value,
+    };
+    console.log('DATA');
+    console.log(dataFromForm);
+    newUser = dataFromForm;
     return newUser;
+  }
+
+  log(event) {
+    console.log(event);
   }
 }
