@@ -1,0 +1,32 @@
+mat-grid-list {
+  margin: 24px;
+}
+
+mat-grid-tile {
+  height: 92%;
+}
+
+#body {
+  height: 100%;
+  width: 100%;
+  /* TODO Insert background image
+  background-color: royalblue;*/
+}
+
+#componentHolder {
+  /*background-color: rebeccapurple;*/
+  border: 1px solid black ;
+  position: fixed;
+  /*height: 45%;
+  width: 25%;*/
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+app-login, app-register {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 24px;
+}

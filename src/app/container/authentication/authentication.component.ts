@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {UserService} from '../../services/user.service';
 import {User} from '../../models/user/user';
 import {VehicleType} from '../../models/user/vehicle-type.enum';
@@ -9,35 +9,17 @@ import {VehicleType} from '../../models/user/vehicle-type.enum';
   styleUrls: ['./authentication.component.css']
 })
 export class AuthenticationComponent implements OnInit {
-  login = false;
-  register = true;
-  buttonText = 'Login';
-  allUsers: User[];
+  selectedIndex: number;
 
-  constructor(private userService: UserService) { }
+  constructor() {
+  }
 
   ngOnInit() {
-    this.userService.getUsers()
-      .subscribe(data => {
-        this.allUsers = data;
-        console.log(this.allUsers);
-      });
-
-    console.log(VehicleType.SEDAN);
   }
 
-  onFormChange() {
-    this.login = !this.login;
-    this.register = !this.register;
-    if (this.login) {
-      this.buttonText = 'Register';
-    } else {
-      this.buttonText = 'Login';
+  switchTab(event) {
+    if (event === true) {
+      this.selectedIndex = 0;
     }
-  }
-
-  onRegisterViewChanged(event) {
-    this.login = event;
-    this.register = !event;
   }
 }

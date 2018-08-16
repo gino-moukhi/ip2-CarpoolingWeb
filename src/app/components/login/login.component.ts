@@ -1,8 +1,12 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {FormBuilder, FormGroup, Validators} from '@angular/forms';
+import {FormBuilder, FormControl, FormGroup, Validators} from '@angular/forms';
 import {Router} from '@angular/router';
 import {UserService} from '../../services/user.service';
 import {User} from '../../models/user/user';
+import {AuthenticationService} from '../../services/authentication.service';
+import {LoginUser} from '../../models/user/login-user';
+import {log} from 'util';
+// import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -10,35 +14,35 @@ import {User} from '../../models/user/user';
   styleUrls: ['./login.component.css']
 })
 export class LoginComponent implements OnInit {
-  @Input() public allUsers: User[];
   loginForm: FormGroup;
   submitted = false;
   invalidLogin = false;
 
-  constructor(private formBuilder: FormBuilder, private router: Router, private userService: UserService) {
-  }
-
-  onSubmit() {
-    this.submitted = true;
-    if (this.loginForm.invalid) {
-      return;
-    }
-    this.allUsers.forEach(user => {
-      if (this.loginForm.controls.email.value === user.email && this.loginForm.controls.password.value === user.password) {
-        console.log('USERS ARE THE SAME');
-        sessionStorage.setItem('currentUser', JSON.stringify(user));
-        this.router.navigate(['main']);
-        console.log(JSON.parse(sessionStorage.getItem('currentUser')));
-      } else {
-        this.invalidLogin = true;
-      }
-    });
+  constructor(private formBuilder: FormBuilder, private router: Router, private authService: AuthenticationService) {
   }
 
   ngOnInit() {
     this.loginForm = this.formBuilder.group({
-      email: ['', Validators.required],
-      password: ['', Validators.required]
+      email: new FormControl(),
+      password: new FormControl()
     });
+  }
+
+  login() {
+    this.submitted = true;
+    if (this.loginForm.invalid) {
+      return;
+    }
+    const credentials = this.loginForm.value;
+    if (credentials.email && credentials.password) {
+      const loginUser = new LoginUser('', credentials.email, credentials.password, '');
+      console.log(credentials);
+      console.log(loginUser);
+      this.authService.login(loginUser).subscribe(user => {
+        console.log('user is logged in');
+        sessionStorage.setItem('loginUser', JSON.stringify(user));
+        this.router.navigateByUrl('/main');
+      });
+    }
   }
 }

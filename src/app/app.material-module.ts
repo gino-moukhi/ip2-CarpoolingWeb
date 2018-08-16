@@ -8,7 +8,10 @@ import {
   MatFormFieldModule,
   MatRadioModule,
   MatSlideToggleModule,
-  MatSelectModule, MatCardModule
+  MatSelectModule,
+  MatCardModule,
+  MatGridListModule,
+  MatTabsModule
 } from '@angular/material';
 import {MatSidenavModule} from '@angular/material/sidenav';
 
@@ -25,6 +28,8 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     MatSlideToggleModule,
     MatSelectModule,
     MatCardModule,
+    MatGridListModule,
+    MatTabsModule,
   ],
   exports: [
     MatButtonModule,
@@ -38,6 +43,8 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     MatSlideToggleModule,
     MatSelectModule,
     MatCardModule,
+    MatGridListModule,
+    MatTabsModule,
   ]
 })
 export class AppMaterialModule {
