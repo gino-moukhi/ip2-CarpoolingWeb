@@ -11,7 +11,8 @@ import {
   MatSelectModule,
   MatCardModule,
   MatGridListModule,
-  MatTabsModule
+  MatTabsModule,
+  MatExpansionModule
 } from '@angular/material';
 import {MatSidenavModule} from '@angular/material/sidenav';
 
@@ -30,6 +31,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     MatCardModule,
     MatGridListModule,
     MatTabsModule,
+    MatExpansionModule,
   ],
   exports: [
     MatButtonModule,
@@ -45,6 +47,7 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     MatCardModule,
     MatGridListModule,
     MatTabsModule,
+    MatExpansionModule
   ]
 })
 export class AppMaterialModule {

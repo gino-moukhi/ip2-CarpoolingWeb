@@ -36,24 +36,15 @@ export class MainComponent implements OnInit {
   }
 
   profileClick() {
-    /*this.profile = true;
-    this.carpool = false;
-    this.routeFinder = false;*/
     this.page = 'profile';
 
   }
 
   carpoolClick() {
-    /*this.profile = false;
-    this.carpool = true;
-    this.routeFinder = false;*/
     this.page = 'carpool';
   }
 
   routeFinderClick() {
-    /*this.profile = false;
-    this.carpool = false;
-    this.routeFinder = true;*/
     this.page = 'routeFinder';
   }
 }

@@ -148,7 +148,7 @@
   </div>
 
   <div id="actionButtons">
-    <button mat-raised-button [color]="isReading?'primary':'accent'" (click)="enableEditing()">
+    <button mat-raised-button [color]="isReading?'primary':'warn'" (click)="enableEditing()">
       {{isReading?'Editprofile':'Cancel editing'}}
     </button>
     <button mat-raised-button color="primary" (click)="updateUser()" type="submit" *ngIf="!isReading">Update</button>

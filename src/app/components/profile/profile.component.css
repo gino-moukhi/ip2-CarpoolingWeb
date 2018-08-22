@@ -6,10 +6,6 @@ mat-card mat-form-field {
   width: 100%;
 }
 
-#actionButtons, h1, mat-card {
-  margin: 24px;
-}
-
 
 .horizontal-card-list {
   display: flex;

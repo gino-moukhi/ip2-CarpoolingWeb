@@ -1,8 +1,42 @@
 agm-map {
-  height: 450px;
+  height: 100%;
+  width: 100%;
 }
-fieldset {
-  border: none;
-  padding: 0;
-  margin: 0;
+
+mat-card {
+  width: 250px;
+}
+
+mat-card mat-form-field {
+  width: 100%;
+}
+
+
+.horizontal-card-list {
+  display: flex;
+  flex-wrap: wrap;
+  width: 100%;
+  height: 100%;
+}
+
+.map-container {
+  flex: 1 1 auto;
+  min-height: 300px;
+  min-width: 300px;
+  margin: 24px 24px 24px 0;
+}
+
+mat-radio-button {
+  width: 35%;
+}
+
+#actionButtons, h1, mat-card {
+  margin: 24px;
+}
+
+mat-expansion-panel {
+  /*display: flex;
+  flex-direction: row-reverse;*/
+  width: auto;
+  margin: 0 24px;
 }

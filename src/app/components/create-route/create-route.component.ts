@@ -58,10 +58,8 @@ export class CreateRouteComponent implements OnInit {
       console.log(value);
     });*/
 
-    this.userService.getUserById(sessionStorage.getItem('currentUser')).subscribe(value => {
-      this.currentUser = value;
+      this.currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
       console.log(this.currentUser);
-    });
   }
 
   private initWaypointFields(): FormGroup {
