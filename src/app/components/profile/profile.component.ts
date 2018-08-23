@@ -84,6 +84,7 @@ export class ProfileComponent implements OnInit {
           this.currentUser = data;
           this.message = 'Your details were updated successfully';
           this.isReading = true;
+          this.profileForm.disable();
           sessionStorage.setItem('currentUser', JSON.stringify(this.currentUser));
         },
         error => this.message = 'Oops something went wrong while updating your details. Try again later!'

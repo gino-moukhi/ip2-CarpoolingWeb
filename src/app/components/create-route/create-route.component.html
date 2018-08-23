@@ -1,8 +1,7 @@
 <div>
   <h1>Route creator</h1>
-  <!--<button (click)="changeMapLayerToTraffic()">Show traffic</button>-->
   <div class="horizontal-card-list">
-    <form [formGroup]="routeForm" (ngSubmit)="createRoute()" (ngReset)="clearRoute()">
+    <form [formGroup]="routeForm" (ngSubmit)="createRoute()">
       <div>
         <mat-card>
           <mat-card-header>
@@ -70,8 +69,13 @@
             <mat-card-title>Actions</mat-card-title>
           </mat-card-header>
           <mat-card-content>
-            <button mat-raised-button type="submit" color="primary">Make route</button>
-            <button mat-raised-button type="reset" color="warn">Clear route</button>
+            <button mat-raised-button type="submit" color="primary" class="actionButton">Show route</button>
+            <button mat-raised-button type="button" color="warn" class="actionButton" (click)="clearRoute()">Clear
+              route
+            </button>
+            <button mat-raised-button type="button" color="primary" class="actionButton" *ngIf="isCompleteRoute"
+                    (click)="sendRoute()">Confirm route
+            </button>
           </mat-card-content>
         </mat-card>
       </div>
@@ -82,11 +86,12 @@
         <agm-marker [latitude]="home.lat" [longitude]="home.lng">
           <agm-info-window [isOpen]="true">You are here</agm-info-window>
         </agm-marker>
-        <agm-direction *ngIf="completeRoute"
+        <agm-direction *ngIf="isCompleteRoute && routeVisible"
                        [origin]="routeDefinition.origin"
                        [destination]="routeDefinition.destination"
                        [waypoints]="routeDefinition.waypoints"
-                       [panel]="myPanel">
+                       [panel]="myPanel"
+                       [visible]="routeVisible">
         </agm-direction>
       </agm-map>
     </div>
@@ -96,126 +101,10 @@
     <mat-expansion-panel>
       <mat-expansion-panel-header>
         <mat-panel-title>Route directions</mat-panel-title>
-        <mat-panel-description *ngIf="!completeRoute">No route directions available</mat-panel-description>
-        <mat-panel-description *ngIf="completeRoute">Open to see directions</mat-panel-description>
+        <mat-panel-description *ngIf="!isCompleteRoute">No route directions available</mat-panel-description>
+        <mat-panel-description *ngIf="isCompleteRoute">Open to see directions</mat-panel-description>
       </mat-expansion-panel-header>
       <div #myPanel></div>
     </mat-expansion-panel>
   </mat-accordion>
-  <!--<mat-grid-list [cols]="5">
-    <mat-grid-tile [colspan]="1" [rowspan]="2">
-      <form [formGroup]="routeForm" (ngSubmit)="createRoute()" (ngReset)="clearRoute()">
-        <div>
-          <mat-card>
-            <mat-card-header>
-              <mat-card-title>Required</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <mat-grid-list [cols]="5" rowHeight="60px">
-                <mat-grid-tile [rowspan]="2">
-                  <button mat-icon-button type="button" color="accent" (click)="swapLocations()">
-                    <mat-icon>swap_vert</mat-icon>
-                  </button>
-                </mat-grid-tile>
-                <mat-grid-tile [colspan]="4">
-                  <mat-form-field formGroupName="origin">
-                    <input matInput id="origin" type="text" placeholder="Start location" formControlName="name"
-                           spellcheck="false"
-                           autocomplete="false" (focus)="autoCompleter($event)">
-                  </mat-form-field>
-                </mat-grid-tile>
-                <mat-grid-tile [colspan]="4">
-                  <mat-form-field formGroupName="destination">
-                    <input matInput id="destination" type="text" placeholder="Destination location"
-                           formControlName="name"
-                           spellcheck="false" autocomplete="false" (focus)="autoCompleter($event)">
-                  </mat-form-field>
-                </mat-grid-tile>
-              </mat-grid-list>
-
-              <div>
-                <mat-label>Type of route</mat-label>
-                <br/>
-                <mat-radio-group formControlName="routeType">
-                  <mat-radio-button [value]="'SINGLE'">Single</mat-radio-button>
-                  <mat-radio-button [value]="'RETURN'">Return</mat-radio-button>
-                </mat-radio-group>
-              </div>
-            </mat-card-content>
-          </mat-card>
-
-          <mat-card>
-            <mat-card-header>
-              <mat-card-title>Optional</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <div formArrayName="waypoints">
-                <div [formGroupName]="i" *ngFor="let wp of routeForm.controls.waypoints.controls; let i = index">
-                  <mat-form-field>
-                    <input matInput [placeholder]="'Waypoint ' + (i + 1)" spellcheck="false" type="text"
-                           formControlName="name"
-                           [id]="'wp.' + i" (click)="autoCompleter($event)">
-
-                    <button mat-icon-button *ngIf="routeForm.controls.waypoints.length > 1" matSuffix
-                            (click)="removeWaypoint(i)">
-                      <mat-icon>close</mat-icon>
-                    </button>
-                  </mat-form-field>
-                </div>
-                <button mat-raised-button type="button" (click)="createWaypoint()">Add new waypoint</button>
-              </div>
-            </mat-card-content>
-          </mat-card>
-
-          <mat-card>
-            <mat-card-header>
-              <mat-card-title>Actions</mat-card-title>
-            </mat-card-header>
-            <mat-card-content>
-              <button mat-raised-button type="submit" color="primary">Make route</button>
-              <button mat-raised-button type="reset" color="warn">Clear route</button>
-            </mat-card-content>
-          </mat-card>
-        </div>
-      </form>
-    </mat-grid-tile>
-    <mat-grid-tile [colspan]="4" [rowspan]="2">
-      <agm-map [latitude]="home.lat" [longitude]="home.lng" [zoom]="17" [scrollwheel]="false"
-               (mapReady)="onMapReady($event)">
-        <agm-marker [latitude]="home.lat" [longitude]="home.lng">
-          <agm-info-window [isOpen]="true">You are here</agm-info-window>
-        </agm-marker>
-        <agm-direction *ngIf="completeRoute"
-                       [origin]="routeDefinition.origin"
-                       [destination]="routeDefinition.destination"
-                       [waypoints]="routeDefinition.waypoints"
-                       [panel]="myPanel">
-        </agm-direction>
-      </agm-map>
-    </mat-grid-tile>
-    &lt;!&ndash;<mat-grid-tile [colspan]="1"></mat-grid-tile>
-    <mat-grid-tile [colspan]="4" [rowspan]="1">
-      &lt;!&ndash;<div #myPanel></div>&ndash;&gt;
-      &lt;!&ndash;<mat-accordion>
-        <mat-expansion-panel>
-          <mat-expansion-panel-header>
-            <mat-panel-title>Route directions</mat-panel-title>
-            <mat-panel-description *ngIf="!completeRoute">No route directions available</mat-panel-description>
-            <mat-panel-description *ngIf="completeRoute">Open to see directions</mat-panel-description>
-          </mat-expansion-panel-header>
-          <div #myPanel></div>
-        </mat-expansion-panel>
-      </mat-accordion>&ndash;&gt;
-    </mat-grid-tile>&ndash;&gt;
-  </mat-grid-list>
-  <mat-accordion>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>Route directions</mat-panel-title>
-        <mat-panel-description *ngIf="!completeRoute">No route directions available</mat-panel-description>
-        <mat-panel-description *ngIf="completeRoute">Open to see directions</mat-panel-description>
-      </mat-expansion-panel-header>
-      <div #myPanel></div>
-    </mat-expansion-panel>
-  </mat-accordion>-->
 </div>

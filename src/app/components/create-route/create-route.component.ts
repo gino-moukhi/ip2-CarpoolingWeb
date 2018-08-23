@@ -10,8 +10,9 @@ import {RouteComplete} from '../../models/route/route-complete';
 import {UserService} from '../../services/user.service';
 import {User} from '../../models/user/user';
 import {RouteWaypoint} from '../../models/route/route-waypoint';
-import {RouteType} from '../../models/route/route-type.enum';
 import {RouteUser} from '../../models/route/route-user';
+import {ControlPosition, MapTypeControlStyle} from '@agm/core/services/google-maps-types';
+import {RouteType} from '../../models/route/route-type.enum';
 
 declare var google: any;
 
@@ -22,14 +23,14 @@ declare var google: any;
 })
 export class CreateRouteComponent implements OnInit {
   home: RouteLocation;
-  completeRoute = false;
+  isCompleteRoute = false;
+  routeToSend: RouteComplete;
   currentMapInstance: google.maps.Map;
   routeForm: FormGroup;
   trafficLayer: google.maps.TrafficLayer;
   routeDefinition: RouteDefinition;
-
-  // allRoutes: RouteComplete[];
   currentUser: User;
+  routeVisible = false;
 
   constructor(private fb: FormBuilder, private mapsAPILoader: MapsAPILoader, private ngZone: NgZone, private routeService: RouteService,
               private userService: UserService) {
@@ -50,16 +51,9 @@ export class CreateRouteComponent implements OnInit {
     });
 
     this.home = new RouteLocation('', 0, 0);
-    // this.setCurrentPosition();
-    /*this.routeService.getRoutes().subscribe(value => {
-      // this.allRoutes = value;
-      console.log(this.allRoutes);
-      console.log('val');
-      console.log(value);
-    });*/
 
-      this.currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
-      console.log(this.currentUser);
+    this.currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    console.log(this.currentUser);
   }
 
   private initWaypointFields(): FormGroup {
@@ -72,17 +66,12 @@ export class CreateRouteComponent implements OnInit {
   private setCurrentPosition() {
     if ('geolocation' in navigator) {
       navigator.geolocation.getCurrentPosition((position) => {
-        console.log('1');
-        console.log(this.home);
         this.home = new RouteLocation('', position.coords.latitude, position.coords.longitude);
-        console.log('2');
-        console.log(this.home);
       });
     }
   }
 
-  changeMapLayerToTraffic() {
-    // let traffic = new google.maps.TrafficLayer();
+  swapTrafficLayer() {
     if (this.trafficLayer.getMap() == null) {
       this.trafficLayer.setMap(this.currentMapInstance);
     } else {
@@ -91,9 +80,17 @@ export class CreateRouteComponent implements OnInit {
   }
 
   onMapReady(mapInstance) {
+    const controlDiv = document.createElement('div');
+    this.trafficControl(controlDiv);
+    mapInstance.controls[ControlPosition.TOP_CENTER].push(controlDiv);
+    mapInstance.mapTypeControl = true;
+    mapInstance.fullscreenControl = true;
+    mapInstance.mapTypeControlOptions = {
+      style: MapTypeControlStyle.HORIZONTAL_BAR,
+      mapTypeIds: ['roadmap', 'terrain', 'satellite', 'hybrid']
+    };
     this.currentMapInstance = mapInstance;
     this.setCurrentPosition();
-    // this.currentMapInstance.setCenter(new google.maps.LatLng(this.home.lat, this.home.lng));
     this.trafficLayer = new google.maps.TrafficLayer();
   }
 
@@ -167,28 +164,40 @@ export class CreateRouteComponent implements OnInit {
     } else if (this.routeForm.controls.routeType.untouched) {
       console.log('please pick a route type (single or return)');
     } else {
-      this.completeRoute = true;
+      this.isCompleteRoute = true;
+      this.routeVisible = true;
     }
 
     console.log(this.routeDefinition);
-    if (this.completeRoute) {
+    if (this.isCompleteRoute) {
       const routeDefinitionForBackEnd = new RouteDefinition(this.routeDefinition.origin, this.routeDefinition.destination,
         this.routeForm.controls.routeType.value, waypointsAsLocation);
 
       console.log(routeDefinitionForBackEnd);
       const currentRouteUser = new RouteUser(this.currentUser);
-      const complete = new RouteComplete(null, routeDefinitionForBackEnd, currentRouteUser.vehicle.type, new Date(),
+      this.routeToSend = new RouteComplete(null, routeDefinitionForBackEnd, currentRouteUser.vehicle.type, new Date(),
         this.currentUser.vehicle.numberOfPassengers, currentRouteUser, [], []);
-      console.log(complete);
-      // this.routeService.createRoute(complete).subscribe();
+      console.log(this.routeToSend);
     }
   }
 
+  sendRoute() {
+    this.routeService.createRoute(this.routeToSend).subscribe();
+  }
+  // TODO fix clear route in map
   clearRoute() {
-    this.completeRoute = !this.completeRoute;
-    this.routeForm.reset();
-
+    this.isCompleteRoute = false;
+    this.routeVisible = false;
     const wps = <FormArray>this.routeForm.controls.waypoints;
+    console.log('WP ARRAY SIZE');
+    console.log(wps.length);
+    while (wps.length !== 1) {
+      this.removeWaypoint(wps.length - 1);
+    }
+    this.routeDefinition = new RouteDefinition(this.home, this.home, RouteType.SINGLE, []);
+    this.routeToSend = null;
+
+    this.routeForm.reset();
 
     // this.routeDirection = null;
     /*this.routeForm.controls.origin.value.name = null;
@@ -205,10 +214,14 @@ export class CreateRouteComponent implements OnInit {
       this.removeWaypoint(i);
       console.log(this.routeForm.controls.waypoints);
     }*/
-
+    console.log('FORM');
     console.log(this.routeForm);
+    console.log('DEFINITION');
     console.log(this.routeDefinition);
-    console.log(this.completeRoute);
+    console.log('ROUTE TO SEND');
+    console.log(this.routeToSend);
+    console.log('ISCOMPLETE');
+    console.log(this.isCompleteRoute);
   }
 
   swapLocations() {
@@ -249,5 +262,43 @@ export class CreateRouteComponent implements OnInit {
       };
       wpControl.setValue(data);
     }
+  }
+
+  private trafficControl(controlDiv) {
+    const controlUI = document.createElement('div');
+    controlUI.style.backgroundColor = '#fff';
+    controlUI.style.border = '2px solid #fff';
+    controlUI.style.cursor = 'pointer';
+    controlUI.style.marginBottom = '22px';
+    controlUI.style.marginTop = '10px';
+    controlUI.style.textAlign = 'center';
+    controlUI.title = 'Click to show traffic';
+    controlDiv.appendChild(controlUI);
+    const controlText = document.createElement('div');
+    controlText.style.color = 'rgb(25,25,25)';
+    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+    controlText.style.fontSize = '11px';
+    controlText.style.lineHeight = '26px';
+    controlText.style.paddingLeft = '5px';
+    controlText.style.paddingRight = '5px';
+    controlText.innerHTML = 'Show traffic';
+    controlUI.appendChild(controlText);
+
+    controlUI.addEventListener('click', () => {
+      if (controlUI.children[0].innerHTML === 'Show traffic') {
+        controlUI.children[0].innerHTML = 'Hide traffic';
+      } else {
+        controlUI.children[0].innerHTML = 'Show traffic';
+      }
+      this.swapTrafficLayer();
+    });
+    controlUI.addEventListener('mouseover', () => {
+      controlUI.style.backgroundColor = '#d9d9d9';
+      controlUI.style.borderColor = '#d9d9d9';
+    });
+    controlUI.addEventListener('mouseout', () => {
+      controlUI.style.backgroundColor = '#fff';
+      controlUI.style.borderColor = '#fff';
+    });
   }
 }

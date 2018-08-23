@@ -30,8 +30,12 @@ mat-radio-button {
   width: 35%;
 }
 
-#actionButtons, h1, mat-card {
+h1, mat-card {
   margin: 24px;
+}
+
+.actionButton {
+  margin: 6px 6px;
 }
 
 mat-expansion-panel {
