@@ -9,16 +9,12 @@ mat-grid-tile {
 #body {
   height: 100%;
   width: 100%;
-  /* TODO Insert background image
-  background-color: royalblue;*/
+  /* TODO Insert background image */
 }
 
 #componentHolder {
-  /*background-color: rebeccapurple;*/
   border: 1px solid black ;
   position: fixed;
-  /*height: 45%;
-  width: 25%;*/
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);

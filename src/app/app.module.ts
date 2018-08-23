@@ -14,14 +14,15 @@ import {AuthenticationComponent} from './container/authentication/authentication
 import {CreateRouteComponent} from './components/create-route/create-route.component';
 import {AgmCoreModule} from '@agm/core';
 import {AgmDirectionModule} from 'agm-direction';
-import {RouteFinderComponent} from './components/route-finder/route-finder.component';
 import {RouteDetailComponent} from './components/route-detail/route-detail.component';
 import {CommunicationFormComponent} from './components/communication-form/communication-form.component';
-import { RouteMyroutesComponent } from './components/route-myroutes/route-myroutes.component';
+import {RouteMyroutesComponent} from './components/route-myroutes/route-myroutes.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import {AppMaterialModule} from './app.material-module';
-import { LayoutModule } from '@angular/cdk/layout';
-import { MainComponent } from './container/main/main.component';
+import {LayoutModule} from '@angular/cdk/layout';
+import {MainComponent} from './container/main/main.component';
+import {RouteSearcherComponent} from './components/route-searcher/route-searcher.component';
+import {RouteContainerComponent} from './container/route-container/route-container.component';
 
 @NgModule({
   declarations: [
@@ -31,11 +32,12 @@ import { MainComponent } from './container/main/main.component';
     ProfileComponent,
     AuthenticationComponent,
     CreateRouteComponent,
-    RouteFinderComponent,
+    RouteContainerComponent,
     RouteDetailComponent,
     CommunicationFormComponent,
     RouteMyroutesComponent,
     MainComponent,
+    RouteSearcherComponent,
   ],
   imports: [
     BrowserModule,

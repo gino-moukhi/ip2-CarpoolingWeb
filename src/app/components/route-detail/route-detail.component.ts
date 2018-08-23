@@ -34,7 +34,7 @@ export class RouteDetailComponent implements OnInit, OnChanges {
     this.currentUser.name = new Name();
     this.currentUser.address = new Address();
     this.currentUser.vehicle = new Vehicle();
-    this.userService.getUserById(sessionStorage.getItem('currentUser')).subscribe(data => {
+    this.userService.getUserById(JSON.parse(sessionStorage.getItem('currentUser')).id).subscribe(data => {
       this.currentUser = data;
     });
   }

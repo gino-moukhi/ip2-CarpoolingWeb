@@ -39,8 +39,6 @@ h1, mat-card {
 }
 
 mat-expansion-panel {
-  /*display: flex;
-  flex-direction: row-reverse;*/
   width: auto;
   margin: 0 24px;
 }

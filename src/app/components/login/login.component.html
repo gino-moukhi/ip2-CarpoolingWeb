@@ -4,23 +4,11 @@
       <input matInput type="email" placeholder="Email" formControlName="email">
     </mat-form-field>
   </div>
-  <!--
-      <label for="email">Email address:</label>
-      <input type="email" class="form-control" formControlName="email" id="email">
-      <div *ngIf="submitted && loginForm.controls.email.errors" class="error">
-        <div *ngIf="loginForm.controls.email.errors.required">Email is required</div>
-      </div>-->
   <div>
     <mat-form-field>
       <input matInput type="password" placeholder="Password" formControlName="password">
     </mat-form-field>
   </div>
-
-  <!--<label for="pwd">Password:</label>
-  <input type="password" class="form-control" formControlName="password" id="pwd">
-  <div *ngIf="submitted && loginForm.controls.password.errors" class="error">
-    <div *ngIf="loginForm.controls.password.errors.required">Password is required</div>
-  </div>-->
   <button mat-raised-button type="submit" color="primary">Login</button>
   <div *ngIf="invalidLogin" class="error">
     <div>Invalid credentials.</div>

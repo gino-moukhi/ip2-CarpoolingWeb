@@ -147,11 +147,11 @@
     </mat-card>
   </div>
 
-  <div id="actionButtons">
-    <button mat-raised-button [color]="isReading?'primary':'warn'" (click)="enableEditing()">
+  <div id="actionButtonContainer">
+    <button mat-raised-button class="actionButton" [color]="isReading?'primary':'warn'" (click)="enableEditing()">
       {{isReading?'Editprofile':'Cancel editing'}}
     </button>
-    <button mat-raised-button color="primary" (click)="updateUser()" type="submit" *ngIf="!isReading">Update</button>
+    <button mat-raised-button class="actionButton" color="primary" (click)="updateUser()" type="submit" *ngIf="!isReading">Update</button>
     <p class="largerP">{{message}}</p>
   </div>
 </form>

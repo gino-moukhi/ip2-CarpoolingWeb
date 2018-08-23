@@ -20,11 +20,14 @@ mat-radio-button {
   margin-bottom: 18px;
 }
 
-#actionButtons, h1, mat-card {
+h1, mat-card, #actionButtonContainer {
   margin: 24px;
 }
 
-#actionButtons {
+#actionButtonContainer {
   display: flex;
-  /*flex-direction: row-reverse;*/
+}
+
+.actionButton {
+  margin: 6px 6px;
 }

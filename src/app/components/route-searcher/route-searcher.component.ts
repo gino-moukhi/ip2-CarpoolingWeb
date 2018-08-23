@@ -1,33 +1,29 @@
-import {} from '@types/googlemaps';
-import {AfterViewInit, Component, NgZone, OnInit} from '@angular/core';
-import {RouteComplete} from '../../models/route/route-complete';
-import {RouteService} from '../../services/route.service';
+import {Component, EventEmitter, NgZone, OnInit, Output} from '@angular/core';
 import {AbstractControl, FormBuilder, FormControl, FormGroup} from '@angular/forms';
-import {MapsAPILoader} from '@agm/core';
-import {RouteLocation} from '../../models/route/route-location';
-import PlaceResult = google.maps.places.PlaceResult;
+import {RouteComplete} from '../../models/route/route-complete';
 import {SearchCriteria} from '../../models/searching/search-criteria';
+import {RouteLocation} from '../../models/route/route-location';
 import {SearchCriteriaAcceptanceType} from '../../models/searching/search-criteria-acceptance-type.enum';
+import PlaceResult = google.maps.places.PlaceResult;
+import {RouteService} from '../../services/route.service';
+import {MapsAPILoader} from '@agm/core';
 
 @Component({
-  selector: 'app-route-finder',
-  templateUrl: './route-finder.component.html',
-  styleUrls: ['./route-finder.component.css']
+  selector: 'app-route-searcher',
+  templateUrl: './route-searcher.component.html',
+  styleUrls: ['./route-searcher.component.css']
 })
-export class RouteFinderComponent implements OnInit {
-  allRoutes: RouteComplete[];
-  allReceivedRoutes: RouteComplete[];
-  currentRoute: RouteComplete;
-  routesToShow: string;
-  myRoutes: RouteComplete[];
+export class RouteSearcherComponent implements OnInit {
+  @Output() routesChanged: EventEmitter<RouteComplete[]> = new EventEmitter<RouteComplete[]>();
+  @Output() currentChildRoute: EventEmitter<RouteComplete> = new EventEmitter<RouteComplete>();
+  /*allReceivedRoutes: RouteComplete[];
+  currentRoute: RouteComplete;*/
   searchRoutes: RouteComplete[];
   simpleSearchForm: FormGroup;
   advancedSearchForm: FormGroup;
   advancedSearch = false;
 
   constructor(private fb: FormBuilder, private mapsAPILoader: MapsAPILoader, private ngZone: NgZone, private routeService: RouteService) {
-    this.allRoutes = [];
-    this.allReceivedRoutes = [];
   }
 
   ngOnInit() {
@@ -48,43 +44,6 @@ export class RouteFinderComponent implements OnInit {
       gender: new FormControl(),
       smoker: new FormControl()
     });
-
-    this.routeService.getRoutes().subscribe(value => {
-      /*value.forEach(route => {
-        const r = new RouteComplete(route.id, route.routeDefinition, route.departure, route.availablePassengers, route.owner,
-          route.passengers, route.communicationRequests);
-        this.allRoutes.push(r);
-      });*/
-      this.allRoutes  = value;
-      this.allReceivedRoutes  = value;
-    });
-  }
-
-  log() {
-    console.log(this.currentRoute);
-  }
-
-  onRouteChanged(event) {
-    console.log('THE ROUTE CHANGED IN THE FINDER');
-    console.log(event);
-    this.currentRoute = event;
-  }
-
-  onRoutesChanged(event) {
-    console.log('THE ROUTES HAVE BEEN CHANGED IN THE FINDER');
-    console.log(event);
-    this.allReceivedRoutes = event;
-  }
-
-  showSpecificRoutes(type: string) {
-    this.routesToShow = type;
-    this.currentRoute = null;
-
-    if (this.routesToShow === 'myRoutes') {
-      this.routeService.getRoutesOfUser(sessionStorage.getItem('currentUser')).subscribe(value => {
-        this.myRoutes = value;
-      });
-    }
   }
 
   enableAdvancedForm() {
@@ -194,6 +153,20 @@ export class RouteFinderComponent implements OnInit {
         this.searchRoutes = value;
       });
     }
+  }
+
+  onRouteChanged(event) {
+    console.log('THE ROUTE CHANGED IN THE SEARCHER');
+    console.log(event);
+    // this.currentRoute = event;
+    this.currentChildRoute.emit(event);
+  }
+
+  onRoutesChanged(event) {
+    console.log('THE ROUTES HAVE BEEN CHANGED IN THE SEARCHER');
+    console.log(event);
+    // this.allReceivedRoutes = event;
+    this.routesChanged.emit(event);
   }
 
   private setFormValue(place: PlaceResult, control: AbstractControl) {

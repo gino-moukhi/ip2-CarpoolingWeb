@@ -24,7 +24,6 @@
           <button>Update</button>
         </td>
         <td *ngIf="isMyRoutes">
-          <!--<button [value]="route.owner.id == currentUser.id?'CANCEL':'STOP PARTICIPATING'">Delete</button>-->
           <button>{{route.owner.id == currentUser.id?'CANCEL ROUTE':'LEAVE ROUTE'}}</button>
         </td>
       </tr>

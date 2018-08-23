@@ -121,22 +121,6 @@ export class ProfileComponent implements OnInit {
     newUser.name = new Name();
     newUser.address = new Address();
     newUser.vehicle = new Vehicle();
-    /*newUser.id = this.currentUser.id;
-    newUser.email = this.profileForm.controls['email'].value;
-    newUser.password = this.profileForm.controls['password'].value;
-    newUser.name.firstName = this.profileForm.controls['firstName'].value;
-    newUser.name.lastName = this.profileForm.controls['lastName'].value;
-    newUser.address.street = this.profileForm.controls['streetName'].value;
-    newUser.address.streetNumber = this.profileForm.controls['streetNumber'].value;
-    newUser.address.zipCode = this.profileForm.controls['zipCode'].value;
-    newUser.address.city = this.profileForm.controls['city'].value;
-    newUser.age = this.profileForm.controls['age'].value;
-    newUser.gender = this.profileForm.controls['gender'].value;
-    newUser.smoker = this.profileForm.controls['smoker'].value;
-    newUser.vehicle.brand = this.profileForm.controls['brand'].value;
-    newUser.vehicle.type = this.profileForm.controls['type'].value;
-    newUser.vehicle.fuelConsumption = this.profileForm.controls['fuel'].value;
-    newUser.vehicle.numberOfPassengers = this.profileForm.controls['passengers'].value;*/
     const dataFromForm = {
       id: this.currentUser.id,
       email: this.profileForm.controls.email.value,

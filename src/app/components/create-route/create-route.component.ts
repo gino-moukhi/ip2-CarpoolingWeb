@@ -32,8 +32,7 @@ export class CreateRouteComponent implements OnInit {
   currentUser: User;
   routeVisible = false;
 
-  constructor(private fb: FormBuilder, private mapsAPILoader: MapsAPILoader, private ngZone: NgZone, private routeService: RouteService,
-              private userService: UserService) {
+  constructor(private fb: FormBuilder, private mapsAPILoader: MapsAPILoader, private ngZone: NgZone, private routeService: RouteService) {
   }
 
   ngOnInit() {
@@ -199,21 +198,6 @@ export class CreateRouteComponent implements OnInit {
 
     this.routeForm.reset();
 
-    // this.routeDirection = null;
-    /*this.routeForm.controls.origin.value.name = null;
-    this.routeForm.controls.origin.value.location = null;
-    this.routeForm.controls.destination.value.name = null;
-    this.routeForm.controls.destination.value.location = null;
-    this.routeForm.controls.routeType.setValue(null);
-
-    for (let i = 0; i < wps.length; i++) {
-      /!*wps.value[i].name = null;
-      wps.value[i].waypoint = null;*!/
-      console.log(i);
-      console.log(wps.length);
-      this.removeWaypoint(i);
-      console.log(this.routeForm.controls.waypoints);
-    }*/
     console.log('FORM');
     console.log(this.routeForm);
     console.log('DEFINITION');

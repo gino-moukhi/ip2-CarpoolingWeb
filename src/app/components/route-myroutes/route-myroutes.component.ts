@@ -1,7 +1,5 @@
 import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
 import {RouteComplete} from '../../models/route/route-complete';
-import {CommunicationRequest} from '../../models/communication/communication-request';
-import {RouteLocation} from '../../models/route/route-location';
 import {CommunicationRequestStatus} from '../../models/communication/communication-request-status.enum';
 import {CommunicationService} from '../../services/communication.service';
 import {RouteDetailComponent} from '../route-detail/route-detail.component';
@@ -26,6 +24,8 @@ export class RouteMyroutesComponent implements OnInit {
   }
 
   ngOnInit() {
+    console.log('ENTERED MY ROUTES');
+    console.log(this.receivedRoutes);
   }
 
   onRoutesChanged(event) {
