@@ -1,0 +1,29 @@
+table {
+  width: 100%;
+}
+
+mat-header-cell, mat-cell {
+  /*min-width: 100px;*/
+  width: fit-content;
+}
+
+mat-card {
+  margin: 24px;
+  width: fit-content;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.table-container table {
+  min-width: 825px;
+}
+
+.actionButton {
+  /*min-width: 130px;*/
+}
+
+.buttonSeperator {
+  margin-right: 12px;
+}

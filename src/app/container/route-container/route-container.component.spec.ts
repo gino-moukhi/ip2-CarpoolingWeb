@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CarpoolMapComponent } from './carpool-map.component';
+import { RouteContainerComponent } from './route-container.component';
 
-describe('CarpoolMapComponent', () => {
-  let component: CarpoolMapComponent;
-  let fixture: ComponentFixture<CarpoolMapComponent>;
+describe('RouteContainerComponent', () => {
+  let component: RouteContainerComponent;
+  let fixture: ComponentFixture<RouteContainerComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CarpoolMapComponent ]
+      declarations: [ RouteContainerComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CarpoolMapComponent);
+    fixture = TestBed.createComponent(RouteContainerComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

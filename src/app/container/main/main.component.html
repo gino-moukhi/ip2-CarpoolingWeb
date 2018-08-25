@@ -1,11 +1,36 @@
-<div #profile (click)=profileClick()>
-  <p (click)=profileClick()>My profile!</p>
-</div>
-<div #carpoolMap (click)=carpoolClick()>
-  <p (click)=carpoolClick()>Go Carpooling</p>
-</div>
-
-<div class="Main col-md-9" [ngSwitch]="page">
-  <app-profile *ngSwitchCase="'profile'" [receivedUser]="currentUser" (userChanged)="onUserChanged($event)"></app-profile>
-  <app-carpool-map *ngSwitchCase="'carpool'"></app-carpool-map>
-</div>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav
+    #drawer
+    class="sidenav"
+    fixedInViewport="true"
+    [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'"
+    [opened]="!(isHandset$ | async)"
+    >
+    <mat-toolbar color="primary">Menu</mat-toolbar>
+    <mat-nav-list>
+      <a mat-list-item (click)=profileClick()>My profile</a>
+      <a mat-list-item (click)=carpoolClick()>Create a route</a>
+      <a mat-list-item (click)=routeFinderClick()>Find routes</a>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button
+        type="button"
+        aria-label="Toggle sidenav"
+        mat-icon-button
+        (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>Carpool.io</span>
+    </mat-toolbar>
+    <!-- Add Content Here -->
+    <div class="Main col-md-9" [ngSwitch]="page">
+      <app-profile *ngSwitchCase="'profile'"></app-profile>
+      <app-carpool-map *ngSwitchCase="'carpool'"></app-carpool-map>
+      <app-route-container *ngSwitchCase="'routeFinder'"></app-route-container>
+    </div>
+  </mat-sidenav-content>
+</mat-sidenav-container>

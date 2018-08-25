@@ -1,0 +1,57 @@
+<mat-card *ngIf="currentRoute && currentRoute.communicationRequests.length != 0 && isOwner">
+  <mat-card-header>
+    <mat-card-title>Passengers to verify</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <div class="table-container">
+      <table mat-table [dataSource]="requestsDataSource" matSort>
+        <ng-container matColumnDef="passengerName">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Passenger</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.user.name.firstName + ' ' + row.user.name.lastName}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="originName">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Pick-up point</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.origin.name}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="destinationName">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Drop-off point</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.destination.name}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="comment">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Comment</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.comment}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="requestStatus">
+          <mat-header-cell *matHeaderCellDef mat-sort-header>Status</mat-header-cell>
+          <mat-cell *matCellDef="let row">{{row.requestStatus}}</mat-cell>
+        </ng-container>
+        <ng-container matColumnDef="actions">
+          <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+          <mat-cell *matCellDef="let row">
+            <div class="button-group">
+              <button mat-icon-button color="primary" class="actionButton" matTooltip="Accept passenger" (click)="handleRequestClick(row.id, acceptStatus)">
+                <mat-icon>check</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" class="actionButton" matTooltip="Decline passenger" (click)="handleRequestClick(row.id, declineStatus)">
+                <mat-icon>close</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" class="actionButton" matTooltip="Delete request" (click)="deleteCommunicationRequest(row.routeId, row.id)">
+                <mat-icon>delete_forever</mat-icon>
+              </button>
+            </div>
+          </mat-cell>
+        </ng-container>
+
+        <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+        <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      </table>
+
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+    </div>
+  </mat-card-content>
+</mat-card>
+
+<div *ngIf="receivedRoutes">
+  <app-route-detail [receivedRoutes]="receivedRoutes" [isMyRoutes]="true" (routeChanged)="onRoutesChanged($event)"
+                    (currentChildRoute)="onRouteChanged($event)"></app-route-detail>
+</div>

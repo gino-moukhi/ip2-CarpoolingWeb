@@ -1,7 +1,13 @@
-<button id="switchFormType" (click)="onFormChange()">{{buttonText}}</button>
-<div *ngIf="login">
-  <app-login></app-login>
-</div>
-<div *ngIf="register">
-  <app-register></app-register>
+<div id="body">
+  <img src="https://desktopwalls.net/wp-content/uploads/2014/06/New%20York%20City%20Yellow%20Taxi%20Cab%20Free%20Wallpaper%20HD.jpg">
+  <div id="componentHolder">
+    <mat-tab-group [dynamicHeight]="true" [(selectedIndex)]="selectedIndex">
+      <mat-tab label="Login">
+        <app-login></app-login>
+      </mat-tab>
+      <mat-tab label="Register">
+        <app-register (switchToLogin)="switchTab($event)"></app-register>
+      </mat-tab>
+    </mat-tab-group>
+  </div>
 </div>

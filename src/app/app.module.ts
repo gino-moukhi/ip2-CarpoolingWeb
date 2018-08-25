@@ -10,11 +10,20 @@ import {AuthenticationService} from './services/authentication.service';
 import {UserService} from './services/user.service';
 import {RegisterComponent} from './components/register/register.component';
 import {ProfileComponent} from './components/profile/profile.component';
-import {MainComponent} from './container/main/main.component';
 import {AuthenticationComponent} from './container/authentication/authentication.component';
-import { CarpoolMapComponent } from './components/carpool-map/carpool-map.component';
+import {CreateRouteComponent} from './components/create-route/create-route.component';
 import {AgmCoreModule} from '@agm/core';
 import {AgmDirectionModule} from 'agm-direction';
+import {RouteDetailComponent} from './components/route-detail/route-detail.component';
+import {CommunicationFormComponent} from './components/communication-form/communication-form.component';
+import {RouteMyroutesComponent} from './components/route-myroutes/route-myroutes.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {AppMaterialModule} from './app.material-module';
+import {LayoutModule} from '@angular/cdk/layout';
+import {MainComponent} from './container/main/main.component';
+import {RouteSearcherComponent} from './components/route-searcher/route-searcher.component';
+import {RouteContainerComponent} from './container/route-container/route-container.component';
+import { RouteEditDialogComponent } from './components/route-edit-dialog/route-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -22,9 +31,15 @@ import {AgmDirectionModule} from 'agm-direction';
     LoginComponent,
     RegisterComponent,
     ProfileComponent,
-    MainComponent,
     AuthenticationComponent,
-    CarpoolMapComponent,
+    CreateRouteComponent,
+    RouteContainerComponent,
+    RouteDetailComponent,
+    CommunicationFormComponent,
+    RouteMyroutesComponent,
+    MainComponent,
+    RouteSearcherComponent,
+    RouteEditDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -35,10 +50,14 @@ import {AgmDirectionModule} from 'agm-direction';
     AgmDirectionModule,
     AppRoutingModule,
     ReactiveFormsModule,
-    HttpClientModule
+    HttpClientModule,
+    BrowserAnimationsModule,
+    AppMaterialModule,
+    LayoutModule,
   ],
   providers: [AuthenticationService, UserService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [RouteDetailComponent, CommunicationFormComponent, RouteEditDialogComponent]
 })
 export class AppModule {
 }

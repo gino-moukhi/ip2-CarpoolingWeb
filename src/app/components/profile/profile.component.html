@@ -1,107 +1,157 @@
-<div class="row">
+<h1>Profile</h1>
+<form [formGroup]="profileForm">
+  <div class="horizontal-card-list">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Credentials</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div>
+          <mat-form-field>
+            <mat-label>Email address</mat-label>
+            <input matInput type="email" formControlName="email" [readonly]="isReading">
+          </mat-form-field>
+        </div>
 
-  <div class="col-md-6 col-md-offset-2">
-    <h1>Profile</h1>
-    <form [formGroup]="profileForm">
-      <h5>Credentials</h5>
-      <div class="form-group">
-        <label for="email">Email address:</label>
-        <input type="email" class="form-control" formControlName="email" id="email" [readonly]="isReading">
-      </div>
+        <div>
+          <mat-form-field>
+            <mat-label>Password</mat-label>
+            <input matInput type="password" formControlName="password" [readonly]="isReading">
+          </mat-form-field>
+        </div>
+      </mat-card-content>
+    </mat-card>
 
-      <div class="form-group">
-        <label for="pwd">Password:</label>
-        <input type="password" class="form-control" formControlName="password" id="pwd" [readonly]="isReading">
-      </div>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>General</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div formGroupName="name">
+          <div>
+            <mat-form-field>
+              <mat-label>Firstname</mat-label>
+              <input matInput type="text" formControlName="firstName">
+            </mat-form-field>
+          </div>
 
-      <h5>General</h5>
-      <div class="form-group">
-        <label for="firstName">Firstname:</label>
-        <input type="text" class="form-control" formControlName="firstName" id="firstName" [readonly]="isReading">
-      </div>
+          <div>
+            <mat-form-field>
+              <mat-label>Lastname</mat-label>
+              <input matInput type="text" formControlName="lastName">
+            </mat-form-field>
+          </div>
+        </div>
 
-      <div class="form-group">
-        <label for="lastName">Lastname:</label>
-        <input type="text" class="form-control" formControlName="lastName" id="lastName" [readonly]="isReading">
-      </div>
+        <div>
+          <mat-form-field>
+            <mat-label>Age</mat-label>
+            <input matInput type="number" formControlName="age">
+          </mat-form-field>
+        </div>
 
-      <div class="form-group">
-        <label for="age">Age:</label>
-        <input type="number" class="form-control" formControlName="age" id="age" [readonly]="isReading">
-      </div>
+        <div class="spacer-between-radioGroups">
+          <mat-label>Smoker</mat-label>
+          <br/>
+          <mat-radio-group formControlName="smoker">
+            <mat-radio-button [value]="true">Yes</mat-radio-button>
+            <mat-radio-button [value]="false">No</mat-radio-button>
+          </mat-radio-group>
+        </div>
 
-      <div class="form-group">
-        <label for="genderMale">Gender:</label>
-        <input type="radio" class="form-control" formControlName="gender" id="genderMale" name="gender" value="MALE"
-               [readonly]="isReading"> Male
-        <input type="radio" class="form-control" formControlName="gender" id="genderFemale" name="gender" value="FEMALE"
-               [readonly]="isReading"> Female
-      </div>
+        <div>
+          <mat-label>Gender</mat-label>
+          <br/>
+          <mat-radio-group formControlName="gender">
+            <mat-radio-button value="MALE">Male</mat-radio-button>
+            <mat-radio-button value="FEMALE">Female</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </mat-card-content>
+    </mat-card>
 
-      <div class="form-group">
-        <label for="smokerYes">Smoker:</label>
-        <input type="radio" class="form-control" formControlName="smoker" id="smokerYes" name="smoker" [value]="true"
-               [readonly]="isReading"> Yes
-        <input type="radio" class="form-control" formControlName="smoker" id="smokerNo" name="smoker" [value]="false"
-               [readonly]="isReading"> No
-      </div>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Address</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div formGroupName="address">
+          <div>
+            <mat-form-field>
+              <mat-label>Streetname</mat-label>
+              <input matInput type="text" formControlName="street">
+            </mat-form-field>
+          </div>
 
-      <h5>Address</h5>
-      <div class="form-group">
-        <label for="streetName">Streetname:</label>
-        <input type="text" class="form-control" formControlName="streetName" id="streetName" [readonly]="isReading">
-      </div>
+          <div>
+            <mat-form-field>
+              <mat-label>Streetnumber</mat-label>
+              <input matInput type="number" formControlName="streetNumber">
+            </mat-form-field>
+          </div>
 
-      <div class="form-group">
-        <label for="streetNumber">Streetnumber:</label>
-        <input type="number" class="form-control" formControlName="streetNumber" id="streetNumber"
-               [readonly]="isReading">
-      </div>
+          <div>
+            <mat-form-field>
+              <mat-label>Zipcode</mat-label>
+              <input matInput type="number" formControlName="zipCode">
+            </mat-form-field>
+          </div>
 
-      <div class="form-group">
-        <label for="zipCode">Zipcode:</label>
-        <input type="number" class="form-control" formControlName="zipCode" id="zipCode" [readonly]="isReading">
-      </div>
+          <div>
+            <mat-form-field>
+              <mat-label>City</mat-label>
+              <input matInput type="text" formControlName="city">
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
 
-      <div class="form-group">
-        <label for="city">City:</label>
-        <input type="text" class="form-control" formControlName="city" id="city" [readonly]="isReading">
-      </div>
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Vehicle</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div formGroupName="vehicle">
+          <div>
+            <mat-form-field>
+              <mat-label>Make</mat-label>
+              <input matInput type="text" formControlName="brand">
+            </mat-form-field>
+          </div>
 
-      <h5>Vehicle</h5>
-      <div class="form-group">
-        <label for="brand">Brand:</label>
-        <input type="text" class="form-control" formControlName="brand" id="brand" [readonly]="isReading">
-      </div>
+          <div>
+            <mat-form-field>
+              <mat-label>Type</mat-label>
+              <mat-select formControlName="type">
+                <mat-option *ngFor="let key of keys" [value]="key">{{key}}</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
 
-      <div class="form-group">
-        <label for="type">Type:</label>
-        <!--<input type="text" class="form-control" formControlName="type" id="type" [readonly]="isReading">-->
-        <select id="type" class="form-control" formControlName="type" >
-          <option *ngFor="let key of keys" [value]="key" [label]="types[key]"></option>
-        </select>
-      </div>
+          <div>
+            <mat-form-field>
+              <mat-label>Fuel consumption</mat-label>
+              <input matInput type="number" formControlName="fuelConsumption">
+            </mat-form-field>
+          </div>
 
-      <div class="form-group">
-        <label for="fuel">Fuel consumption:</label>
-        <input type="number" class="form-control" formControlName="fuel" id="fuel" [readonly]="isReading">
-      </div>
-
-      <div class="form-group">
-        <label for="passengers">Passengers:</label>
-        <input type="number" class="form-control" formControlName="passengers" id="passengers" [readonly]="isReading">
-      </div>
-
-      <div id="enableEditing">
-        <button class="btn btn-primary" (click)="enableEditing()">Edit profile</button>
-      </div>
-      <div *ngIf="isReading == false">
-        <button class="btn btn-primary" (click)="changeUser()" type="submit">Change</button>
-        <button class="btn btn-danger" type="submit">Cancel</button>
-      </div>
-    </form>
-    <div class="text-center">
-      <p class="largerP">{{message}}</p>
-    </div>
+          <div>
+            <mat-form-field>
+              <mat-label>Max passengers</mat-label>
+              <input matInput type="number" formControlName="numberOfPassengers">
+            </mat-form-field>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
   </div>
-</div>
+
+  <div id="actionButtonContainer">
+    <button mat-raised-button class="actionButton" [color]="isReading?'primary':'warn'" (click)="enableEditing()">
+      {{isReading?'Editprofile':'Cancel editing'}}
+    </button>
+    <button mat-raised-button class="actionButton" color="primary" (click)="updateUser()" type="submit" *ngIf="!isReading">Update</button>
+    <p class="largerP">{{message}}</p>
+  </div>
+</form>

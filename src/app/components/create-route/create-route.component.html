@@ -1,0 +1,106 @@
+<div>
+  <h1>Route creator</h1>
+  <div class="horizontal-card-list">
+    <form [formGroup]="routeForm" (ngSubmit)="createRoute()">
+      <div>
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Required</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <mat-grid-list [cols]="5" rowHeight="60px">
+              <mat-grid-tile [rowspan]="2">
+                <button mat-icon-button type="button" color="accent" (click)="swapLocations()">
+                  <mat-icon>swap_vert</mat-icon>
+                </button>
+              </mat-grid-tile>
+              <mat-grid-tile [colspan]="4">
+                <mat-form-field formGroupName="origin">
+                  <input matInput id="origin" type="text" placeholder="Start location" formControlName="name"
+                         spellcheck="false"
+                         autocomplete="false" (focus)="autoCompleter($event)">
+                </mat-form-field>
+              </mat-grid-tile>
+              <mat-grid-tile [colspan]="4">
+                <mat-form-field formGroupName="destination">
+                  <input matInput id="destination" type="text" placeholder="Destination location"
+                         formControlName="name"
+                         spellcheck="false" autocomplete="false" (focus)="autoCompleter($event)">
+                </mat-form-field>
+              </mat-grid-tile>
+            </mat-grid-list>
+
+            <div>
+              <mat-label>Type of route</mat-label>
+              <br/>
+              <mat-radio-group formControlName="routeType">
+                <mat-radio-button [value]="'SINGLE'">Single</mat-radio-button>
+                <mat-radio-button [value]="'RETURN'">Return</mat-radio-button>
+              </mat-radio-group>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Optional</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <div>
+              <mat-form-field>
+                <mat-label>Departure date and time</mat-label>
+                <input matInput type="datetime-local" formControlName="departure">
+              </mat-form-field>
+            </div>
+
+            <div formArrayName="waypoints">
+              <div [formGroupName]="i" *ngFor="let wp of routeForm.controls.waypoints.controls; let i = index">
+                <mat-form-field>
+                  <input matInput [placeholder]="'Waypoint ' + (i + 1)" spellcheck="false" type="text"
+                         formControlName="name"
+                         [id]="'wp.' + i" (click)="autoCompleter($event)">
+
+                  <button mat-icon-button *ngIf="routeForm.controls.waypoints.length > 1" matSuffix
+                          (click)="removeWaypoint(i)">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </mat-form-field>
+              </div>
+              <button mat-raised-button type="button" (click)="createWaypoint()">Add new waypoint</button>
+            </div>
+          </mat-card-content>
+        </mat-card>
+
+        <mat-card>
+          <mat-card-header>
+            <mat-card-title>Actions</mat-card-title>
+          </mat-card-header>
+          <mat-card-content>
+            <button mat-raised-button type="submit" color="primary" class="actionButton">Show route</button>
+            <button mat-raised-button type="button" color="warn" class="actionButton" (click)="clearRoute()">Clear
+              route
+            </button>
+            <button mat-raised-button type="button" color="primary" class="actionButton" *ngIf="isCompleteRoute"
+                    (click)="sendRoute()">Confirm route
+            </button>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </form>
+    <div class="map-container">
+      <agm-map [latitude]="home.lat" [longitude]="home.lng" [zoom]="17" [scrollwheel]="false"
+               (mapReady)="onMapReady($event)">
+        <agm-marker [latitude]="home.lat" [longitude]="home.lng">
+          <agm-info-window [isOpen]="true">You are here</agm-info-window>
+        </agm-marker>
+        <agm-direction *ngIf="isCompleteRoute && routeVisible"
+                       [origin]="routeDefinition.origin"
+                       [destination]="routeDefinition.destination"
+                       [waypoints]="routeDefinition.waypoints"
+                       [visible]="routeVisible">
+        </agm-direction>
+      </agm-map>
+    </div>
+
+  </div>
+</div>

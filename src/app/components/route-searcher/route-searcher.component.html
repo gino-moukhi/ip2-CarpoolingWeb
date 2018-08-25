@@ -1,0 +1,94 @@
+<div class="horizontal-card-list">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Search for a route</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="simpleSearchForm">
+        <mat-grid-list [cols]="5" rowHeight="60px">
+          <mat-grid-tile [rowspan]="2">
+            <button mat-icon-button type="button" color="accent" (click)="swapLocations()">
+              <mat-icon>swap_vert</mat-icon>
+            </button>
+          </mat-grid-tile>
+          <mat-grid-tile [colspan]="4">
+            <mat-form-field formGroupName="origin">
+              <input matInput type="text" placeholder="Start location" spellcheck="false" autocomplete="false"
+                     formControlName="name"
+                     id="origin" (focus)="autoCompleter($event)">
+            </mat-form-field>
+          </mat-grid-tile>
+          <mat-grid-tile [colspan]="4">
+            <mat-form-field formGroupName="destination">
+              <input matInput type="text" placeholder="Destination location" spellcheck="false" autocomplete="false"
+                     formControlName="name"
+                     id="destination" (focus)="autoCompleter($event)">
+            </mat-form-field>
+          </mat-grid-tile>
+        </mat-grid-list>
+
+        <div>
+          <mat-form-field>
+            <input matInput type="number" placeholder="Search radius" spellcheck="false" autocomplete="false"
+                   formControlName="distance"
+                   id="distance">
+          </mat-form-field>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="advancedSearch">
+    <mat-card-header>
+      <mat-card-title>Advanced options</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div>
+        <form [formGroup]="advancedSearchForm">
+          <div>
+            <mat-form-field>
+              <mat-label>Departure between</mat-label>
+              <input matInput type="datetime-local" formControlName="minDateTime">
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field>
+              <mat-label>And</mat-label>
+              <input matInput type="datetime-local" formControlName="maxDateTime">
+            </mat-form-field>
+          </div>
+
+          <div class="spacer-between-radioGroups">
+            <mat-label>Gender of the driver</mat-label>
+            <br/>
+            <mat-radio-group formControlName="gender">
+              <mat-radio-button value="OPTION1">Male</mat-radio-button>
+              <mat-radio-button value="OPTION2">Female</mat-radio-button>
+              <mat-radio-button value="EITHER">Either</mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+          <div>
+            <mat-label>Driver or passengers may smoke</mat-label>
+            <br/>
+            <mat-radio-group formControlName="smoker">
+              <mat-radio-button value="OPTION1">Yes</mat-radio-button>
+              <mat-radio-button value="OPTION2">No</mat-radio-button>
+              <mat-radio-button value="EITHER">Either</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>
+<div id="actionButtonContainer">
+  <button mat-raised-button class="actionButton" color="accent" (click)="enableAdvancedForm()">
+    {{advancedSearch?'Hide advanced options':'Show advanced options'}}
+  </button>
+  <button mat-raised-button class="actionButton" color="primary" (click)="findRoute()">Find route</button>
+</div>
+<app-route-detail *ngIf="searchRoutes" [receivedRoutes]="searchRoutes"
+                  (routeChanged)="onRoutesChanged($event)"
+                  (currentChildRoute)="onRouteChanged($event)"></app-route-detail>

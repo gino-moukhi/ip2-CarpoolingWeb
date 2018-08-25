@@ -1,0 +1,53 @@
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Required</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="routeForm">
+      <mat-grid-list [cols]="5" rowHeight="60px">
+        <mat-grid-tile [rowspan]="2">
+          <button mat-icon-button type="button" color="accent" (click)="swapLocations()">
+            <mat-icon>swap_vert</mat-icon>
+          </button>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="4">
+          <mat-form-field formGroupName="origin">
+            <input matInput id="origin" type="text" placeholder="Start location" formControlName="name"
+                   spellcheck="false"
+                   autocomplete="false" (focus)="autoCompleter($event)">
+          </mat-form-field>
+        </mat-grid-tile>
+        <mat-grid-tile [colspan]="4">
+          <mat-form-field formGroupName="destination">
+            <input matInput id="destination" type="text" placeholder="Destination location"
+                   formControlName="name"
+                   spellcheck="false" autocomplete="false" (focus)="autoCompleter($event)">
+          </mat-form-field>
+        </mat-grid-tile>
+      </mat-grid-list>
+
+      <div>
+        <mat-form-field>
+          <mat-label>Departure date and time</mat-label>
+          <input matInput type="datetime-local" formControlName="departure">
+        </mat-form-field>
+      </div>
+
+      <div>
+        <mat-label>Type of route</mat-label>
+        <br/>
+        <mat-radio-group formControlName="routeType">
+          <mat-radio-button [value]="'SINGLE'">Single</mat-radio-button>
+          <mat-radio-button [value]="'RETURN'">Return</mat-radio-button>
+        </mat-radio-group>
+      </div>
+
+      <div id="actionButtonContainer">
+        <button mat-raised-button type="button" color="primary" class="actionButton" (click)="updateRoute()">
+          Update route
+        </button>
+        <button mat-raised-button type="button" color="warn" class="actionButton" matDialogClose>Cancel</button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

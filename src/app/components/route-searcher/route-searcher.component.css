@@ -1,0 +1,30 @@
+mat-card {
+  width: 325px;
+  margin: 24px;
+}
+
+mat-card mat-form-field {
+  width: 100%;
+}
+
+mat-radio-button {
+  width: 30%;
+}
+
+.spacer-between-radioGroups {
+  margin-bottom: 18px;
+}
+
+.horizontal-card-list {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+#actionButtonContainer {
+  margin: 0 24px 24px;
+  display: flex;
+}
+
+.actionButton {
+  margin: 6px 6px;
+}
