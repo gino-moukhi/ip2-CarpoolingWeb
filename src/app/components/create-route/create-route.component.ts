@@ -46,7 +46,8 @@ export class CreateRouteComponent implements OnInit {
         location: new FormControl()
       }, Validators.required),
       routeType: new FormControl(Validators.required),
-      waypoints: this.fb.array([this.initWaypointFields()])
+      waypoints: this.fb.array([this.initWaypointFields()]),
+      departure: new FormControl(Validators.required)
     });
 
     this.home = new RouteLocation('', 0, 0);
@@ -173,9 +174,20 @@ export class CreateRouteComponent implements OnInit {
         this.routeForm.controls.routeType.value, waypointsAsLocation);
 
       console.log(routeDefinitionForBackEnd);
+      let departure: Date;
+      console.log(this.routeForm.controls.departure.value.toString());
+      if (this.routeForm.controls.departure.value.toString().includes('function (control)')) {
+        console.log('BAD VALUE');
+        departure = new Date();
+        console.log(departure);
+      } else {
+        console.log('GOOD VALUE');
+        departure = new Date(this.routeForm.controls.departure.value);
+        console.log(departure);
+      }
       const currentRouteUser = new RouteUser(this.currentUser);
-      this.routeToSend = new RouteComplete(null, routeDefinitionForBackEnd, currentRouteUser.vehicle.type, new Date(),
-        this.currentUser.vehicle.numberOfPassengers, currentRouteUser, [], []);
+      this.routeToSend = new RouteComplete(null, routeDefinitionForBackEnd, currentRouteUser.vehicle.type,
+        departure, this.currentUser.vehicle.numberOfPassengers, currentRouteUser, [], []);
       console.log(this.routeToSend);
     }
   }

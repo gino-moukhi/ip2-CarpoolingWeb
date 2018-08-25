@@ -18,8 +18,8 @@ export class RouteEditDialogComponent implements OnInit {
   routeForm: FormGroup;
   receivedRoute: RouteComplete;
 
-  constructor(public dialogRef: MatDialogRef<RouteEditDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: RouteDialogData, private fb: FormBuilder, private routeService: RouteService,
-              private mapsAPILoader: MapsAPILoader, private ngZone: NgZone) {
+  constructor(public dialogRef: MatDialogRef<RouteEditDialogComponent>, @Inject(MAT_DIALOG_DATA) public data: RouteDialogData,
+              private fb: FormBuilder, private routeService: RouteService, private mapsAPILoader: MapsAPILoader, private ngZone: NgZone) {
     console.log('DATA IN EDIT DIALOG');
     console.log(data);
   }
@@ -38,18 +38,6 @@ export class RouteEditDialogComponent implements OnInit {
       departure: new FormControl(Validators.required)
     });
 
-    /*this.routeForm.controls.origin.setValue({
-      name: this.data.routeDefinition.origin.name,
-      location: new RouteLocation(this.data.routeDefinition.origin.name, this.data.routeDefinition.origin.lat,
-        this.data.routeDefinition.origin.lng)
-    });
-    this.routeForm.controls.destination.setValue({
-      name: this.data.routeDefinition.destination.name,
-      location: new RouteLocation(this.data.routeDefinition.destination.name, this.data.routeDefinition.destination.lat,
-        this.data.routeDefinition.destination.lng)
-    });
-    this.routeForm.controls.routeType.setValue(this.data.routeDefinition.routeType);
-    this.routeForm.controls.departure.setValue(this.data.departure);*/
     this.routeForm.controls.origin.setValue({
       name: this.data.route.routeDefinition.origin.name,
       location: new RouteLocation(this.data.route.routeDefinition.origin.name, this.data.route.routeDefinition.origin.lat,
@@ -79,8 +67,8 @@ export class RouteEditDialogComponent implements OnInit {
     this.routeService.updateRoute(updatedRoute).subscribe(value => {
       this.receivedRoute = value;
       console.log(this.receivedRoute);
-      this.dialogRef.close(this.receivedRoute);
     });
+    this.dialogRef.close();
   }
 
   swapLocations() {

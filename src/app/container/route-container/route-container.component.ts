@@ -45,4 +45,23 @@ export class RouteContainerComponent implements OnInit {
     console.log(event);
     this.allReceivedRoutes = event;
   }
+
+  allRoutesTabClicked(event) {
+    console.log('CLICKED ON ALL ROUTES TAB');
+    console.log(event);
+    switch (event) {
+      case 0:
+        this.routeService.getRoutesOfUser(JSON.parse(sessionStorage.getItem('currentUser')).id).subscribe(value => {
+          this.myRoutes = value;
+          console.log(this.myRoutes);
+        });
+        break;
+      case 1:
+        this.routeService.getRoutes().subscribe(value => {
+          this.allRoutes = value;
+          this.allReceivedRoutes = value;
+        });
+        break;
+    }
+  }
 }

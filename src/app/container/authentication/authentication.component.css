@@ -6,10 +6,21 @@ mat-grid-tile {
   height: 92%;
 }
 
+img {
+  width: 100%;
+  height: 99.6%;
+  opacity: 0.15;
+  z-index: -1;
+}
+
+mat-tab-group {
+  border: 1px solid black;
+}
+
 #body {
   height: 100%;
   width: 100%;
-  /* TODO Insert background image */
+
 }
 
 #componentHolder {

@@ -46,6 +46,13 @@
             <mat-card-title>Optional</mat-card-title>
           </mat-card-header>
           <mat-card-content>
+            <div>
+              <mat-form-field>
+                <mat-label>Departure date and time</mat-label>
+                <input matInput type="datetime-local" formControlName="departure">
+              </mat-form-field>
+            </div>
+
             <div formArrayName="waypoints">
               <div [formGroupName]="i" *ngFor="let wp of routeForm.controls.waypoints.controls; let i = index">
                 <mat-form-field>
