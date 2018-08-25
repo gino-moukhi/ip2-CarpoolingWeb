@@ -90,21 +90,10 @@
                        [origin]="routeDefinition.origin"
                        [destination]="routeDefinition.destination"
                        [waypoints]="routeDefinition.waypoints"
-                       [panel]="myPanel"
                        [visible]="routeVisible">
         </agm-direction>
       </agm-map>
     </div>
 
   </div>
-  <mat-accordion>
-    <mat-expansion-panel>
-      <mat-expansion-panel-header>
-        <mat-panel-title>Route directions</mat-panel-title>
-        <mat-panel-description *ngIf="!isCompleteRoute">No route directions available</mat-panel-description>
-        <mat-panel-description *ngIf="isCompleteRoute">Open to see directions</mat-panel-description>
-      </mat-expansion-panel-header>
-      <div #myPanel></div>
-    </mat-expansion-panel>
-  </mat-accordion>
 </div>

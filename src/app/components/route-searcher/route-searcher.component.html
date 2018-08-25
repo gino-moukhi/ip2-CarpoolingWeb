@@ -1,47 +1,94 @@
-<form [formGroup]="simpleSearchForm">
-  <fieldset formGroupName="origin">
-    <div class="form-group">
-      <input placeholder="Start location" spellcheck="false" autocomplete="false" type="text" class="form-control"
-             formControlName="name" id="origin" (focus)="autoCompleter($event)">
-    </div>
-  </fieldset>
+<div class="horizontal-card-list">
+  <mat-card>
+    <mat-card-header>
+      <mat-card-title>Search for a route</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="simpleSearchForm">
+        <mat-grid-list [cols]="5" rowHeight="60px">
+          <mat-grid-tile [rowspan]="2">
+            <button mat-icon-button type="button" color="accent" (click)="swapLocations()">
+              <mat-icon>swap_vert</mat-icon>
+            </button>
+          </mat-grid-tile>
+          <mat-grid-tile [colspan]="4">
+            <mat-form-field formGroupName="origin">
+              <input matInput type="text" placeholder="Start location" spellcheck="false" autocomplete="false"
+                     formControlName="name"
+                     id="origin" (focus)="autoCompleter($event)">
+            </mat-form-field>
+          </mat-grid-tile>
+          <mat-grid-tile [colspan]="4">
+            <mat-form-field formGroupName="destination">
+              <input matInput type="text" placeholder="Destination location" spellcheck="false" autocomplete="false"
+                     formControlName="name"
+                     id="destination" (focus)="autoCompleter($event)">
+            </mat-form-field>
+          </mat-grid-tile>
+        </mat-grid-list>
 
-  <fieldset formGroupName="destination">
-    <div class="form-group">
-      <input placeholder="Destination location" spellcheck="false" autocomplete="false" type="text"
-             class="form-control" formControlName="name" id="destination" (focus)="autoCompleter($event)">
-    </div>
-  </fieldset>
-  <button type="button" (click)="swapLocations()">Swap locations</button>
-  <div class="form-group">
-    <input placeholder="Distance near locations" spellcheck="false" autocomplete="false" type="number"
-           class="form-control" formControlName="distance" id="distance">
-  </div>
-</form>
-<button (click)="enableAdvancedForm()">Advanced options</button>
-<div *ngIf="advancedSearch">
-  <form [formGroup]="advancedSearchForm">
-    <div class="form-group">
-      <input type="datetime-local" class="form-control" formControlName="minDateTime">
-    </div>
-    <div class="form-group">
-      <input type="datetime-local" class="form-control" formControlName="maxDateTime">
-    </div>
-    <div class="form-group">
-      <label for="genderMale">Gender of driver:</label>
-      <input type="radio" class="form-control" formControlName="gender" id="genderMale" value="OPTION1"> Male
-      <input type="radio" class="form-control" formControlName="gender" id="genderFemale" value="OPTION2"> Female
-      <input type="radio" class="form-control" formControlName="gender" id="genderEither" value="EITHER"> Either (Don't care)
-    </div>
-    <div class="form-group">
-      <label for="smokerYes">Driver may smoke:</label>
-      <input type="radio" class="form-control" formControlName="smoker" id="smokerYes" value="OPTION1"> Yes
-      <input type="radio" class="form-control" formControlName="smoker" id="smokerNo" value="OPTION2"> No
-      <input type="radio" class="form-control" formControlName="smoker" id="smokerEither" value="EITHER"> Either (Don't care)
-    </div>
-  </form>
+        <div>
+          <mat-form-field>
+            <input matInput type="number" placeholder="Search radius" spellcheck="false" autocomplete="false"
+                   formControlName="distance"
+                   id="distance">
+          </mat-form-field>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card *ngIf="advancedSearch">
+    <mat-card-header>
+      <mat-card-title>Advanced options</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div>
+        <form [formGroup]="advancedSearchForm">
+          <div>
+            <mat-form-field>
+              <mat-label>Departure between</mat-label>
+              <input matInput type="datetime-local" formControlName="minDateTime">
+            </mat-form-field>
+          </div>
+
+          <div>
+            <mat-form-field>
+              <mat-label>And</mat-label>
+              <input matInput type="datetime-local" formControlName="maxDateTime">
+            </mat-form-field>
+          </div>
+
+          <div class="spacer-between-radioGroups">
+            <mat-label>Gender of the driver</mat-label>
+            <br/>
+            <mat-radio-group formControlName="gender">
+              <mat-radio-button value="OPTION1">Male</mat-radio-button>
+              <mat-radio-button value="OPTION2">Female</mat-radio-button>
+              <mat-radio-button value="EITHER">Either</mat-radio-button>
+            </mat-radio-group>
+          </div>
+
+          <div>
+            <mat-label>Driver or passengers may smoke</mat-label>
+            <br/>
+            <mat-radio-group formControlName="smoker">
+              <mat-radio-button value="OPTION1">Yes</mat-radio-button>
+              <mat-radio-button value="OPTION2">No</mat-radio-button>
+              <mat-radio-button value="EITHER">Either</mat-radio-button>
+            </mat-radio-group>
+          </div>
+        </form>
+      </div>
+    </mat-card-content>
+  </mat-card>
 </div>
-<button (click)="log()">Log form data</button>
-<button (click)="findRoute()">Find route</button>
+<div id="actionButtonContainer">
+  <button mat-raised-button class="actionButton" color="accent" (click)="enableAdvancedForm()">
+    {{advancedSearch?'Hide advanced options':'Show advanced options'}}
+  </button>
+  <button mat-raised-button class="actionButton" color="primary" (click)="findRoute()">Find route</button>
+</div>
 <app-route-detail *ngIf="searchRoutes" [receivedRoutes]="searchRoutes"
-                  (routeChanged)="onRoutesChanged($event)" (currentChildRoute)="onRouteChanged($event)"></app-route-detail>
+                  (routeChanged)="onRoutesChanged($event)"
+                  (currentChildRoute)="onRouteChanged($event)"></app-route-detail>

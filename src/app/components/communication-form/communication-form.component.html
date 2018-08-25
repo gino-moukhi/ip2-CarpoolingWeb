@@ -1,4 +1,4 @@
-<div>
+<!--<div>
   <form [formGroup]="communicationForm" (ngSubmit)="sendRequest()" (ngReset)="clearForm()">
     <fieldset formGroupName="origin">
       <div class="form-group">
@@ -21,4 +21,65 @@
     <button type="submit">Send request</button>
     <button type="reset">Clear form</button>
   </form>
-</div>
+</div>-->
+<mat-card>
+  <mat-card-header>
+    <mat-card-title>Enlist for this route</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <form [formGroup]="communicationForm" (ngSubmit)="sendRequest()" (ngReset)="clearForm()">
+  <div>
+    <mat-form-field formGroupName="origin">
+      <input matInput type="text" placeholder="Start location" spellcheck="false" autocomplete="false"
+             formControlName="name"
+             id="origin" (focus)="autoCompleter($event)">
+    </mat-form-field>
+  </div>
+
+  <div>
+    <mat-form-field formGroupName="destination">
+      <input matInput type="text" placeholder="Destination location" spellcheck="false" autocomplete="false"
+             formControlName="name"
+             id="destination" (focus)="autoCompleter($event)">
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field>
+          <textarea matInput mat-autosize type="text" placeholder="Extra information for the route owner"
+                    formControlName="comment"></textarea>
+    </mat-form-field>
+  </div>
+  <div id="actionButtonContainer">
+    <button mat-raised-button type="submit" color="primary" class="actionButton">Send request</button>
+    <button mat-raised-button type="reset" color="warn" class="actionButton">Clear form</button>
+  </div>
+</form>
+  </mat-card-content>
+</mat-card>
+<!--<form [formGroup]="communicationForm" (ngSubmit)="sendRequest()" (ngReset)="clearForm()">
+  <div>
+    <mat-form-field formGroupName="origin">
+      <input matInput type="text" placeholder="Start location" spellcheck="false" autocomplete="false"
+             formControlName="name"
+             id="origin" (focus)="autoCompleter($event)">
+    </mat-form-field>
+  </div>
+
+  <div>
+    <mat-form-field formGroupName="destination">
+      <input matInput type="text" placeholder="Destination location" spellcheck="false" autocomplete="false"
+             formControlName="name"
+             id="destination" (focus)="autoCompleter($event)">
+    </mat-form-field>
+  </div>
+  <div>
+    <mat-form-field>
+          <textarea matInput mat-autosize type="text" placeholder="Extra information for the route owner"
+                    formControlName="comment"></textarea>
+    </mat-form-field>
+  </div>
+  <div id="actionButtonContainer">
+    <button mat-raised-button type="submit" color="primary" class="actionButton">Send request</button>
+    <button mat-raised-button type="reset" color="warn" class="actionButton">Clear form</button>
+  </div>
+</form>-->

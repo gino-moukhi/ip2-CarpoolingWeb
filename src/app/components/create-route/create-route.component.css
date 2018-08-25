@@ -4,7 +4,7 @@ agm-map {
 }
 
 mat-card {
-  width: 250px;
+  width: 325px;
 }
 
 mat-card mat-form-field {
@@ -36,9 +36,4 @@ h1, mat-card {
 
 .actionButton {
   margin: 6px 6px;
-}
-
-mat-expansion-panel {
-  width: auto;
-  margin: 0 24px;
 }

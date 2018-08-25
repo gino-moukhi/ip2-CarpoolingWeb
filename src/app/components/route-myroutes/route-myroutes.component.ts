@@ -1,24 +1,33 @@
-import {Component, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {AfterViewInit, Component, EventEmitter, Input, OnChanges, OnInit, Output, ViewChild} from '@angular/core';
 import {RouteComplete} from '../../models/route/route-complete';
 import {CommunicationRequestStatus} from '../../models/communication/communication-request-status.enum';
 import {CommunicationService} from '../../services/communication.service';
 import {RouteDetailComponent} from '../route-detail/route-detail.component';
+import {MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {CommunicationRequest} from '../../models/communication/communication-request';
+import {tap} from 'rxjs/operators';
 
 @Component({
   selector: 'app-route-myroutes',
   templateUrl: './route-myroutes.component.html',
   styleUrls: ['./route-myroutes.component.css']
 })
-export class RouteMyroutesComponent implements OnInit {
+export class RouteMyroutesComponent implements OnInit, AfterViewInit {
   @Input() receivedRoutes: RouteComplete[];
   @Output() routeChanged: EventEmitter<RouteComplete[]> = new EventEmitter<RouteComplete[]>();
   @Output() currentChildRoute: EventEmitter<RouteComplete> = new EventEmitter<RouteComplete>();
   @ViewChild(RouteDetailComponent) detailsComponent: RouteDetailComponent;
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   allRoutes: RouteComplete[];
   currentRoute: RouteComplete;
   acceptStatus = CommunicationRequestStatus.ACCEPTED;
   declineStatus = CommunicationRequestStatus.DECLINED;
   isOwner = false;
+  requestsDataSource: MatTableDataSource<CommunicationRequest>;
+
+  displayedColumns: string[] = ['passengerName', 'originName', 'destinationName', 'comment', 'requestStatus', 'actions'];
+
 
   constructor(private communicationService: CommunicationService) {
   }
@@ -26,6 +35,13 @@ export class RouteMyroutesComponent implements OnInit {
   ngOnInit() {
     console.log('ENTERED MY ROUTES');
     console.log(this.receivedRoutes);
+    console.log(this.currentRoute);
+  }
+
+  ngAfterViewInit() {
+    // this.requestsDataSource = new MatTableDataSource([]);
+    /*this.requestsDataSource.paginator = this.paginator;
+    this.requestsDataSource.sort = this.sort;*/
   }
 
   onRoutesChanged(event) {
@@ -54,8 +70,17 @@ export class RouteMyroutesComponent implements OnInit {
   onRouteChanged(event) {
     console.log('THE ROUTE HAS BEEN CHANGED IN MY ROUTES');
     this.currentRoute = event;
-    this.isOwner = this.currentRoute.owner.id === sessionStorage.getItem('currentUser');
+    this.isOwner = this.currentRoute.owner.id === JSON.parse(sessionStorage.getItem('currentUser')).id;
     console.log(this.currentRoute.communicationRequests);
+    this.requestsDataSource = new MatTableDataSource<CommunicationRequest>(this.currentRoute.communicationRequests);
+    console.log(this.requestsDataSource.paginator);
+    console.log(this.requestsDataSource.sort);
+    this.requestsDataSource.paginator = this.paginator;
+    this.requestsDataSource.sort = this.sort;
+    console.log(this.requestsDataSource.paginator);
+    console.log(this.requestsDataSource.sort);
+    console.log('DATASOURCE');
+    console.log(this.requestsDataSource);
     this.currentChildRoute.emit(this.currentRoute);
   }
 
@@ -72,5 +97,11 @@ export class RouteMyroutesComponent implements OnInit {
       console.log('ERROR');
       console.log(error1);
     });
+  }
+
+  log() {
+    console.log(this.receivedRoutes);
+    console.log(this.currentRoute);
+    console.log(!!this.currentRoute);
   }
 }

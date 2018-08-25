@@ -1,3 +1,42 @@
 agm-map {
-  height: 300px;
+  height: 100%;
+  width: 100%;
+}
+
+.map-container {
+  flex: 1 1 auto;
+  min-height: 400px;
+  min-width: 400px;
+  margin: 24px;
+}
+
+mat-header-cell, mat-cell {
+  /*min-width: 100px;*/
+  width: fit-content;
+}
+
+mat-card table {
+  width: 100%;
+}
+
+mat-card {
+  margin: 24px;
+  width: 400px;
+}
+
+#main-table-card {
+  width: fit-content;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.table-container table {
+  min-width: 800px;
+}
+
+.horizontal-card-list {
+  display: flex;
+  flex-wrap: wrap;
 }

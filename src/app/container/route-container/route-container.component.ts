@@ -12,23 +12,25 @@ export class RouteContainerComponent implements OnInit {
   allRoutes: RouteComplete[];
   allReceivedRoutes: RouteComplete[];
   currentRoute: RouteComplete;
-  currentUser: User;
+  // currentRouteUser: User;
   myRoutes: RouteComplete[];
   defaultTabIndex: number;
 
   constructor(private routeService: RouteService) {
     this.allRoutes = [];
     this.allReceivedRoutes = [];
+    this.myRoutes = [];
     this.defaultTabIndex = 1; // index to show all routes
   }
 
   ngOnInit() {
+    this.routeService.getRoutesOfUser(JSON.parse(sessionStorage.getItem('currentUser')).id).subscribe(value => {
+      this.myRoutes = value;
+      console.log(this.myRoutes);
+    });
     this.routeService.getRoutes().subscribe(value => {
       this.allRoutes = value;
       this.allReceivedRoutes = value;
-    });
-    this.routeService.getRoutesOfUser(JSON.parse(sessionStorage.getItem('currentUser')).id).subscribe(value => {
-      this.myRoutes = value;
     });
   }
 

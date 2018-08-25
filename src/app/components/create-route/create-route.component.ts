@@ -198,6 +198,7 @@ export class CreateRouteComponent implements OnInit {
 
     this.routeForm.reset();
 
+
     console.log('FORM');
     console.log(this.routeForm);
     console.log('DEFINITION');

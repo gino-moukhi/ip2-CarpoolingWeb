@@ -12,7 +12,13 @@ import {
   MatCardModule,
   MatGridListModule,
   MatTabsModule,
-  MatExpansionModule
+  MatExpansionModule,
+  MatTableModule,
+  MatPaginatorModule,
+  MatSortModule,
+  MatProgressSpinnerModule,
+  MatDialogModule,
+  MatTooltipModule
 } from '@angular/material';
 import {MatSidenavModule} from '@angular/material/sidenav';
 
@@ -32,6 +38,12 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     MatGridListModule,
     MatTabsModule,
     MatExpansionModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatProgressSpinnerModule,
+    MatDialogModule,
+    MatTooltipModule
   ],
   exports: [
     MatButtonModule,
@@ -47,7 +59,13 @@ import {MatSidenavModule} from '@angular/material/sidenav';
     MatCardModule,
     MatGridListModule,
     MatTabsModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatProgressSpinnerModule,
+    MatDialogModule,
+    MatTooltipModule
   ]
 })
 export class AppMaterialModule {

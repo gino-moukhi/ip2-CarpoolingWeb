@@ -1,3 +1,4 @@
+<h1>Route finder</h1>
 <mat-tab-group [selectedIndex]="1">
   <mat-tab label="My routes">
     <app-route-myroutes [receivedRoutes]="myRoutes" (routeChanged)="onRoutesChanged($event)" (currentChildRoute)="onRouteChanged($event)"></app-route-myroutes>

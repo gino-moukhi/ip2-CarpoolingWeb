@@ -1,4 +1,4 @@
-import {Component, Input, NgZone, OnInit} from '@angular/core';
+import {Component, Inject, Input, NgZone, OnInit} from '@angular/core';
 import {AbstractControl, FormBuilder, FormControl, FormGroup} from '@angular/forms';
 import {MapsAPILoader} from '@agm/core';
 import {RouteLocation} from '../../models/route/route-location';
@@ -7,6 +7,8 @@ import {CommunicationRequest} from '../../models/communication/communication-req
 import {CommunicationRequestStatus} from '../../models/communication/communication-request-status.enum';
 import {CommunicationService} from '../../services/communication.service';
 import {RouteUser} from '../../models/route/route-user';
+import {CommunicationRequestDialogData} from '../../models/communication/communicationRequestDialogData';
+import {MAT_DIALOG_DATA} from '@angular/material';
 
 @Component({
   selector: 'app-communication-form',
@@ -14,13 +16,13 @@ import {RouteUser} from '../../models/route/route-user';
   styleUrls: ['./communication-form.component.css']
 })
 export class CommunicationFormComponent implements OnInit {
-  @Input() currentRouteId: string;
-  @Input() currentUser: RouteUser;
+  /*@Input() currentRouteId: string;
+  @Input() currentRouteUser: RouteUser;*/
   communicationForm: FormGroup;
   communicationRequest: CommunicationRequest;
 
   constructor(private fb: FormBuilder, private mapsAPILoader: MapsAPILoader, private ngZone: NgZone,
-              private communicationService: CommunicationService) {
+              private communicationService: CommunicationService, @Inject(MAT_DIALOG_DATA) public data: CommunicationRequestDialogData) {
   }
 
   ngOnInit() {
@@ -42,7 +44,7 @@ export class CommunicationFormComponent implements OnInit {
       this.communicationForm.controls.origin.value.location.lat, this.communicationForm.controls.origin.value.location.lng);
     const destination = new RouteLocation(this.communicationForm.controls.destination.value.name,
       this.communicationForm.controls.destination.value.location.lat, this.communicationForm.controls.destination.value.location.lng);
-    this.communicationRequest = new CommunicationRequest('', this.currentRouteId, this.currentUser, origin, destination,
+    this.communicationRequest = new CommunicationRequest('', this.data.currentRouteId, this.data.currentRouteUser, origin, destination,
       this.communicationForm.controls.comment.value, CommunicationRequestStatus.IN_PROGRESS);
 
     console.log(this.communicationRequest);

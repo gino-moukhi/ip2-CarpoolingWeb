@@ -54,7 +54,8 @@ import {RouteContainerComponent} from './container/route-container/route-contain
     LayoutModule,
   ],
   providers: [AuthenticationService, UserService],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [RouteDetailComponent, CommunicationFormComponent]
 })
 export class AppModule {
 }

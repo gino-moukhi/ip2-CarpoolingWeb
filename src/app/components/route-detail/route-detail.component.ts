@@ -1,4 +1,15 @@
-import {Component, ElementRef, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges, ViewChild} from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  EventEmitter,
+  Input,
+  OnChanges,
+  OnInit,
+  Output,
+  SimpleChanges,
+  ViewChild
+} from '@angular/core';
 import {RouteComplete} from '../../models/route/route-complete';
 import {RouteWaypoint} from '../../models/route/route-waypoint';
 import {User} from '../../models/user/user';
@@ -8,6 +19,18 @@ import {Vehicle} from '../../models/user/vehicle';
 import {UserService} from '../../services/user.service';
 import {RouteUser} from '../../models/route/route-user';
 import {MapsAPILoader} from '@agm/core';
+import {MatDialog, MatPaginator, MatSort, MatTableDataSource} from '@angular/material';
+import {RouteLocation} from '../../models/route/route-location';
+import {ControlPosition, MapTypeControlStyle} from '@agm/core/services/google-maps-types';
+import {CommunicationFormComponent} from '../communication-form/communication-form.component';
+
+export interface CustomDataTable {
+  origin: string;
+  destination: string;
+  route: string;
+  departure: string;
+  waypoints: string[];
+}
 
 @Component({
   selector: 'app-route-detail',
@@ -19,14 +42,28 @@ export class RouteDetailComponent implements OnInit, OnChanges {
   @Input() isMyRoutes: boolean;
   @Output() routeChanged: EventEmitter<RouteComplete[]> = new EventEmitter<RouteComplete[]>();
   @Output() currentChildRoute: EventEmitter<RouteComplete> = new EventEmitter<RouteComplete>();
+  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild(MatSort) sort: MatSort;
   currentRoute: RouteComplete;
   currentWaypoints: RouteWaypoint[] = [];
   currentUser: User;
   currentRouteUser: RouteUser;
   communicationFormIsOpen = false;
   isOwner = false;
+  allRoutesDataSource: MatTableDataSource<RouteComplete>;
+  currentRouteDataSource: MatTableDataSource<RouteComplete>;
+  allRoutesDisplayedColumns: string[] = ['origin', 'destination', 'departure', 'waypoints', 'actions'];
+  generalRouteInfoDisplayedColumns: string[] = ['owner', 'route', 'vehicle', 'passengers'];
+  // routeDetailsInfoDisplayedColumns: string[] = ['origin', 'destination', 'routeType', 'departure', 'waypoints'];
 
-  constructor(private userService: UserService, private mapsAPILoader: MapsAPILoader) {
+  waypointDataSource: MatTableDataSource<RouteLocation>;
+  waypointDisplayColumns: string[];
+  passengerDataSource: MatTableDataSource<RouteUser>;
+  passengerDisplayColumns: string[];
+  private trafficLayer: google.maps.TrafficLayer;
+  private currentMapInstance: google.maps.Map;
+
+  constructor(private userService: UserService, private dialog: MatDialog) {
   }
 
   ngOnInit() {
@@ -37,13 +74,19 @@ export class RouteDetailComponent implements OnInit, OnChanges {
     this.userService.getUserById(JSON.parse(sessionStorage.getItem('currentUser')).id).subscribe(data => {
       this.currentUser = data;
     });
+
+    console.log('RECEIVED ON INIT');
+    console.log(this.receivedRoutes);
   }
 
-  ngOnChanges(changes: SimpleChanges) {
-    console.log('CHANGES');
-    console.log('CHANGES');
-    console.log('CHANGES');
-    console.log(changes);
+  ngOnChanges() {
+    console.log('RECEIVED ON CHANGE');
+    console.log(this.receivedRoutes);
+    this.allRoutesDataSource = new MatTableDataSource<RouteComplete>(this.receivedRoutes);
+    this.allRoutesDataSource.paginator = this.paginator;
+    this.allRoutesDataSource.sort = this.sort;
+    console.log('DATA SOURCE');
+    console.log(this.allRoutesDataSource);
   }
 
   onRouteClick(route: RouteComplete) {
@@ -51,6 +94,11 @@ export class RouteDetailComponent implements OnInit, OnChanges {
     this.refreshWaypoints();
     this.onRoutesChanged();
     this.onRouteChanged();
+    this.currentRouteDataSource = new MatTableDataSource([this.currentRoute]);
+    this.currentRouteDataSource.paginator = this.paginator;
+    this.currentRouteDataSource.sort = this.sort;
+    this.initWaypointsTable();
+    this.initPassengersTable();
     this.calculateCurrentDistance(this.currentRoute);
   }
 
@@ -118,11 +166,96 @@ export class RouteDetailComponent implements OnInit, OnChanges {
     this.currentChildRoute.emit(this.currentRoute);
   }
 
-  addPassengerToRoute() {
+  addPassengerToRoute(route) {
+    this.currentRouteUser = new RouteUser(this.currentUser);
     console.log('current user');
-    console.log(this.currentUser);
-    console.log('current route user');
-    // TODO replace with mat-dialog
-    this.communicationFormIsOpen = !this.communicationFormIsOpen;
+    console.log(this.currentRouteUser);
+
+    this.currentRoute = route;
+    console.log('current route');
+    console.log(this.currentRoute);
+    console.log(route);
+    this.dialog.open(CommunicationFormComponent, {
+      data: {
+        currentRouteId: this.currentRoute.id,
+        currentRouteUser: this.currentRouteUser
+      }
+    });
+  }
+
+  showMatchingLetter(index: number): string {
+    return String.fromCharCode(66 + index);
+  }
+
+  onMapReady(mapInstance) {
+    const controlDiv = document.createElement('div');
+    this.trafficControl(controlDiv);
+    mapInstance.controls[ControlPosition.TOP_CENTER].push(controlDiv);
+    mapInstance.mapTypeControl = true;
+    mapInstance.fullscreenControl = true;
+    mapInstance.mapTypeControlOptions = {
+      style: MapTypeControlStyle.HORIZONTAL_BAR,
+      mapTypeIds: ['roadmap', 'terrain', 'satellite', 'hybrid']
+    };
+    this.currentMapInstance = mapInstance;
+    this.trafficLayer = new google.maps.TrafficLayer();
+  }
+
+  private initWaypointsTable() {
+    this.waypointDisplayColumns = ['letter', 'waypoints'];
+    this.waypointDataSource = new MatTableDataSource(this.currentRoute.routeDefinition.waypoints);
+    console.log(this.waypointDataSource);
+  }
+
+  private initPassengersTable() {
+    this.passengerDisplayColumns = ['email', 'name'];
+    this.passengerDataSource = new MatTableDataSource(this.currentRoute.passengers);
+    console.log(this.waypointDataSource);
+  }
+
+  private swapTrafficLayer() {
+    if (this.trafficLayer.getMap() == null) {
+      this.trafficLayer.setMap(this.currentMapInstance);
+    } else {
+      this.trafficLayer.setMap(null);
+    }
+  }
+
+  private trafficControl(controlDiv) {
+    const controlUI = document.createElement('div');
+    controlUI.style.backgroundColor = '#fff';
+    controlUI.style.border = '2px solid #fff';
+    controlUI.style.cursor = 'pointer';
+    controlUI.style.marginBottom = '22px';
+    controlUI.style.marginTop = '10px';
+    controlUI.style.textAlign = 'center';
+    controlUI.title = 'Click to show traffic';
+    controlDiv.appendChild(controlUI);
+    const controlText = document.createElement('div');
+    controlText.style.color = 'rgb(25,25,25)';
+    controlText.style.fontFamily = 'Roboto,Arial,sans-serif';
+    controlText.style.fontSize = '11px';
+    controlText.style.lineHeight = '26px';
+    controlText.style.paddingLeft = '5px';
+    controlText.style.paddingRight = '5px';
+    controlText.innerHTML = 'Show traffic';
+    controlUI.appendChild(controlText);
+
+    controlUI.addEventListener('click', () => {
+      if (controlUI.children[0].innerHTML === 'Show traffic') {
+        controlUI.children[0].innerHTML = 'Hide traffic';
+      } else {
+        controlUI.children[0].innerHTML = 'Show traffic';
+      }
+      this.swapTrafficLayer();
+    });
+    controlUI.addEventListener('mouseover', () => {
+      controlUI.style.backgroundColor = '#d9d9d9';
+      controlUI.style.borderColor = '#d9d9d9';
+    });
+    controlUI.addEventListener('mouseout', () => {
+      controlUI.style.backgroundColor = '#fff';
+      controlUI.style.borderColor = '#fff';
+    });
   }
 }

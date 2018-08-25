@@ -2,94 +2,147 @@
   <p>There are no routes to show at this time</p>
 </div>
 <div *ngIf="receivedRoutes">
-  <button (click)="addPassengerToRoute()">Add yourself to the route</button>
-  <div>
-    <table class="table table-striped">
-      <thead>
-      <tr>
-        <th>Origin</th>
-        <th>Destination</th>
-        <th>Departure time</th>
-        <th>#waypoints</th>
-        <th *ngIf="isMyRoutes">Actions</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr *ngFor="let route of receivedRoutes" (click)="onRouteClick(route)">
-        <td>{{route.routeDefinition.origin.name}}</td>
-        <td>{{route.routeDefinition.destination.name}}</td>
-        <td>{{route.departure}}</td>
-        <td>{{route.routeDefinition.waypoints.length}}</td>
-        <td *ngIf="isMyRoutes && route.owner.id == currentUser.id">
-          <button>Update</button>
-        </td>
-        <td *ngIf="isMyRoutes">
-          <button>{{route.owner.id == currentUser.id?'CANCEL ROUTE':'LEAVE ROUTE'}}</button>
-        </td>
-      </tr>
-      </tbody>
-    </table>
+  <mat-card id="main-table-card">
+    <mat-card-header>
+      <mat-card-title>Routes</mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="table-container">
+        <table mat-table [dataSource]="allRoutesDataSource" matSort>
+          <ng-container matColumnDef="origin">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Start point</mat-header-cell>
+            <mat-cell *matCellDef="let row" (click)="onRouteClick(row)">{{row.routeDefinition.origin.name}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="destination">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>End point</mat-header-cell>
+            <mat-cell *matCellDef="let row" (click)="onRouteClick(row)">{{row.routeDefinition.destination.name}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="departure">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Departure time</mat-header-cell>
+            <mat-cell *matCellDef="let row" (click)="onRouteClick(row)">{{row.departure}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="waypoints">
+            <mat-header-cell *matHeaderCellDef mat-sort-header># Waypoints</mat-header-cell>
+            <mat-cell *matCellDef="let row" (click)="onRouteClick(row)">{{row.routeDefinition.waypoints.length}}
+            </mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="actions">
+            <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
+            <mat-cell *matCellDef="let row" (click)="onRouteClick(row)">
+              <div class="button-group">
+                <button mat-icon-button color="primary" class="actionButton" *ngIf="!isMyRoutes"
+                        (click)="addPassengerToRoute(row)" matTooltip="Enlist in route">
+                  <mat-icon>add</mat-icon>
+                </button>
+                <button mat-icon-button color="primary" class="actionButton"
+                        *ngIf="isMyRoutes && row.owner.id == currentUser.id" matTooltip="Edit route">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" class="actionButton" matTooltip="Delete route" *ngIf="isMyRoutes && row.owner.id == currentUser.id">
+                  <mat-icon>delete_forever</mat-icon>
+                </button>
+                <button mat-icon-button color="warn" class="actionButton" matTooltip="Leave route" *ngIf="isMyRoutes && row.owner.id !== currentUser.id">
+                  <mat-icon>close</mat-icon>
+                </button>
+                <!--<button mat-flat-button color="warn" class="actionButton">{{row.owner.id == currentRouteUser.id?'CANCEL ROUTE':'LEAVE ROUTE'}}</button>-->
+              </div>
+            </mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="allRoutesDisplayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: allRoutesDisplayedColumns;"></mat-row>
+        </table>
+
+        <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]"></mat-paginator>
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <div class="horizontal-card-list" *ngIf="currentRoute">
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Extra information</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <table mat-table [dataSource]="currentRouteDataSource" matSort>
+          <ng-container matColumnDef="owner">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Owner</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.owner.name.firstName + ' ' + row.owner.name.lastName}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="route">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Route type</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.routeDefinition.routeType}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="vehicle">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Vehicle type</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.vehicleType}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="passengers">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Available passengers</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.availablePassengers}}</mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="generalRouteInfoDisplayedColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: generalRouteInfoDisplayedColumns;"></mat-row>
+        </table>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card>
+      <mat-card-header>
+        <mat-card-title>Waypoints</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <table mat-table [dataSource]="waypointDataSource" matSort>
+          <ng-container matColumnDef="letter">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Letter</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{showMatchingLetter(waypointDataSource.data.indexOf(row))}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="waypoints">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Waypoint</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.name}}</mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="waypointDisplayColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: waypointDisplayColumns;"></mat-row>
+        </table>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card *ngIf="isMyRoutes && currentRoute.passengers">
+      <mat-card-header>
+        <mat-card-title>Passengers</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <table mat-table [dataSource]="passengerDataSource" matSort>
+          <ng-container matColumnDef="email">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Email</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.email}}</mat-cell>
+          </ng-container>
+          <ng-container matColumnDef="name">
+            <mat-header-cell *matHeaderCellDef mat-sort-header>Name</mat-header-cell>
+            <mat-cell *matCellDef="let row">{{row.name.firstName + ' ' + row.name.lastName}}</mat-cell>
+          </ng-container>
+
+          <mat-header-row *matHeaderRowDef="passengerDisplayColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: passengerDisplayColumns;"></mat-row>
+        </table>
+      </mat-card-content>
+    </mat-card>
   </div>
+</div>
+<!--<div *ngIf="communicationFormIsOpen">
+  <app-communication-form [currentRouteId]="currentRoute.id" [currentRouteUser]="currentRouteUser"></app-communication-form>
+</div>-->
+<div class="horizontal-card-list">
+  <div class="map-container" *ngIf="currentRoute">
+    <agm-map [scrollwheel]="false" (mapReady)="onMapReady($event)">
+      <agm-direction #myDirection [origin]="currentRoute.routeDefinition.origin"
+                     [destination]="currentRoute.routeDefinition.destination"
+                     [waypoints]="currentWaypoints">
 
-  <div *ngIf="currentRoute">
-    <table class="table table-striped">
-      <thead>
-      <tr>
-        <th [attr.colspan]="3">General route info</th>
-      </tr>
-      <tr>
-        <th>Departure time</th>
-        <th>Vehicle type</th>
-        <th>Available passengers</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td>{{currentRoute.departure}}</td>
-        <td>{{currentRoute.vehicleType}}</td>
-        <td>{{currentRoute.availablePassengers}}</td>
-      </tr>
-      </tbody>
-    </table>
-
-    <table class="table table-striped">
-      <thead>
-      <tr>
-        <th [attr.colspan]="currentRoute.routeDefinition.waypoints.length + 4">Route definition info</th>
-      </tr>
-      <tr>
-        <th>Origin</th>
-        <th>Destination</th>
-        <th>Route type</th>
-        <th>Departure time</th>
-        <th *ngFor="let wp of currentRoute.routeDefinition.waypoints; let i = index">Waypoint {{i+1}}</th>
-      </tr>
-      </thead>
-      <tbody>
-      <tr>
-        <td>{{currentRoute.routeDefinition.origin.name}}</td>
-        <td>{{currentRoute.routeDefinition.destination.name}}</td>
-        <td>{{currentRoute.routeDefinition.routeType}}</td>
-        <td>{{currentRoute.departure}}</td>
-        <td *ngFor="let wp of currentRoute.routeDefinition.waypoints">{{wp.name}}</td>
-      </tr>
-      </tbody>
-    </table>
+      </agm-direction>
+    </agm-map>
   </div>
-</div>
-<div *ngIf="communicationFormIsOpen">
-  <app-communication-form [currentRouteId]="currentRoute.id" [currentUser]="currentUser"></app-communication-form>
-</div>
-<div *ngIf="currentRoute">
-  <agm-map [scrollwheel]="false">
-    <agm-direction #myDirection [origin]="currentRoute.routeDefinition.origin"
-                   [destination]="currentRoute.routeDefinition.destination"
-                   [waypoints]="currentWaypoints"
-                   [panel]="myPanel">
-
-    </agm-direction>
-  </agm-map>
-</div>
-<div #myPanel>
-
 </div>
