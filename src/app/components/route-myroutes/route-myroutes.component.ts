@@ -99,6 +99,10 @@ export class RouteMyroutesComponent implements OnInit, AfterViewInit {
     });
   }
 
+  deleteCommunicationRequest(routeId: string, requestId: string) {
+    this.communicationService.deleteCommunicationRequest(routeId, requestId).subscribe();
+  }
+
   log() {
     console.log(this.receivedRoutes);
     console.log(this.currentRoute);

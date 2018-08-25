@@ -1,0 +1,16 @@
+mat-card {
+  width: 400px;
+}
+
+mat-card mat-form-field {
+  width: 100%;
+}
+
+#actionButtonContainer {
+  margin: 24px 0;
+  display: flex;
+}
+
+.actionButton {
+  margin: 6px 6px;
+}

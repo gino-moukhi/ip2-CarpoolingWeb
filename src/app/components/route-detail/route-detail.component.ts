@@ -23,6 +23,11 @@ import {MatDialog, MatPaginator, MatSort, MatTableDataSource} from '@angular/mat
 import {RouteLocation} from '../../models/route/route-location';
 import {ControlPosition, MapTypeControlStyle} from '@agm/core/services/google-maps-types';
 import {CommunicationFormComponent} from '../communication-form/communication-form.component';
+import {RouteEditDialogComponent} from '../route-edit-dialog/route-edit-dialog.component';
+import {RouteDefinition} from '../../models/route/route-definition';
+import {RouteService} from '../../services/route.service';
+import {CommunicationService} from '../../services/communication.service';
+import {CommunicationRequestStatus} from '../../models/communication/communication-request-status.enum';
 
 export interface CustomDataTable {
   origin: string;
@@ -48,7 +53,6 @@ export class RouteDetailComponent implements OnInit, OnChanges {
   currentWaypoints: RouteWaypoint[] = [];
   currentUser: User;
   currentRouteUser: RouteUser;
-  communicationFormIsOpen = false;
   isOwner = false;
   allRoutesDataSource: MatTableDataSource<RouteComplete>;
   currentRouteDataSource: MatTableDataSource<RouteComplete>;
@@ -63,18 +67,11 @@ export class RouteDetailComponent implements OnInit, OnChanges {
   private trafficLayer: google.maps.TrafficLayer;
   private currentMapInstance: google.maps.Map;
 
-  constructor(private userService: UserService, private dialog: MatDialog) {
+  constructor(private dialog: MatDialog, private routeService: RouteService, private communicationService: CommunicationService) {
   }
 
   ngOnInit() {
-    this.currentUser = new User();
-    this.currentUser.name = new Name();
-    this.currentUser.address = new Address();
-    this.currentUser.vehicle = new Vehicle();
-    this.userService.getUserById(JSON.parse(sessionStorage.getItem('currentUser')).id).subscribe(data => {
-      this.currentUser = data;
-    });
-
+    this.currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
     console.log('RECEIVED ON INIT');
     console.log(this.receivedRoutes);
   }
@@ -180,6 +177,45 @@ export class RouteDetailComponent implements OnInit, OnChanges {
         currentRouteId: this.currentRoute.id,
         currentRouteUser: this.currentRouteUser
       }
+    });
+  }
+
+  editRoute(route) {
+    const dialogRef = this.dialog.open(RouteEditDialogComponent, {
+      data: {
+        /*routeDefinition: route.routeDefinition,
+        departure: route.departure*/
+        route: route
+      }
+    });
+    dialogRef.afterClosed().subscribe(value => {
+      console.log('DATA RECEIVED FROM DIALOG');
+      console.log(value);
+      this.currentRoute = value;
+      let routeToUpdateInArray = this.receivedRoutes.find(r => r.id === value.id);
+      routeToUpdateInArray = value;
+      console.log('EDITED PROPERTIES');
+      console.log(routeToUpdateInArray);
+      console.log(this.receivedRoutes);
+    });
+  }
+
+  deleteRoute(route) {
+    console.log(route);
+    this.routeService.deleteRoute(route.id).subscribe(() => {
+      this.currentRoute = this.receivedRoutes[0];
+      this.receivedRoutes.splice(this.receivedRoutes.indexOf(route), 1);
+      this.onRouteChanged();
+      this.onRoutesChanged();
+      this.allRoutesDataSource = new MatTableDataSource<RouteComplete>(this.receivedRoutes);
+      this.currentRouteDataSource = new MatTableDataSource([this.currentRoute]);
+    });
+  }
+
+  leaveRoute(route: RouteComplete) {
+    const requestToSend = route.communicationRequests.find(r => r.user.id === this.currentUser.id);
+    this.communicationService.updateCommunicationRequestStatus(requestToSend.id, CommunicationRequestStatus.DECLINED).subscribe(value => {
+      this.currentRoute = value;
     });
   }
 

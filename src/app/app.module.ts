@@ -23,6 +23,7 @@ import {LayoutModule} from '@angular/cdk/layout';
 import {MainComponent} from './container/main/main.component';
 import {RouteSearcherComponent} from './components/route-searcher/route-searcher.component';
 import {RouteContainerComponent} from './container/route-container/route-container.component';
+import { RouteEditDialogComponent } from './components/route-edit-dialog/route-edit-dialog.component';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import {RouteContainerComponent} from './container/route-container/route-contain
     RouteMyroutesComponent,
     MainComponent,
     RouteSearcherComponent,
+    RouteEditDialogComponent,
   ],
   imports: [
     BrowserModule,
@@ -55,7 +57,7 @@ import {RouteContainerComponent} from './container/route-container/route-contain
   ],
   providers: [AuthenticationService, UserService],
   bootstrap: [AppComponent],
-  entryComponents: [RouteDetailComponent, CommunicationFormComponent]
+  entryComponents: [RouteDetailComponent, CommunicationFormComponent, RouteEditDialogComponent]
 })
 export class AppModule {
 }

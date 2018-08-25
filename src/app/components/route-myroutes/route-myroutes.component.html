@@ -1,4 +1,4 @@
-<mat-card >
+<mat-card *ngIf="currentRoute && currentRoute.communicationRequests.length != 0 && isOwner">
   <mat-card-header>
     <mat-card-title>Passengers to verify</mat-card-title>
   </mat-card-header>
@@ -34,6 +34,9 @@
               </button>
               <button mat-icon-button color="warn" class="actionButton" matTooltip="Decline passenger" (click)="handleRequestClick(row.id, declineStatus)">
                 <mat-icon>close</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" class="actionButton" matTooltip="Delete request" (click)="deleteCommunicationRequest(row.routeId, row.id)">
+                <mat-icon>delete_forever</mat-icon>
               </button>
             </div>
           </mat-cell>

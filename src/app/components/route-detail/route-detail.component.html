@@ -36,13 +36,17 @@
                   <mat-icon>add</mat-icon>
                 </button>
                 <button mat-icon-button color="primary" class="actionButton"
-                        *ngIf="isMyRoutes && row.owner.id == currentUser.id" matTooltip="Edit route">
+                        *ngIf="isMyRoutes && row.owner.id == currentUser.id" matTooltip="Edit route"
+                        (click)="editRoute(row)">
                   <mat-icon>edit</mat-icon>
                 </button>
-                <button mat-icon-button color="warn" class="actionButton" matTooltip="Delete route" *ngIf="isMyRoutes && row.owner.id == currentUser.id">
+                <button mat-icon-button color="warn" class="actionButton"
+                        *ngIf="isMyRoutes && row.owner.id == currentUser.id"
+                        (click)="deleteRoute(row)" matTooltip="Delete route">
                   <mat-icon>delete_forever</mat-icon>
                 </button>
-                <button mat-icon-button color="warn" class="actionButton" matTooltip="Leave route" *ngIf="isMyRoutes && row.owner.id !== currentUser.id">
+                <button mat-icon-button color="warn" class="actionButton" matTooltip="Leave route"
+                        *ngIf="isMyRoutes && row.owner.id !== currentUser.id" (click)="leaveRoute(row)">
                   <mat-icon>close</mat-icon>
                 </button>
                 <!--<button mat-flat-button color="warn" class="actionButton">{{row.owner.id == currentRouteUser.id?'CANCEL ROUTE':'LEAVE ROUTE'}}</button>-->
