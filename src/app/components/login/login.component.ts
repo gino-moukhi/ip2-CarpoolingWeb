@@ -37,6 +37,7 @@ export class LoginComponent implements OnInit {
       this.authService.login(loginUser).subscribe(user => {
         console.log('user is logged in');
         sessionStorage.setItem('loginUser', JSON.stringify(user));
+        sessionStorage.setItem('guestUser', 'false');
         this.router.navigateByUrl('/main');
       });
     }

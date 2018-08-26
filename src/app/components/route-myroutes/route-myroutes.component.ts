@@ -14,6 +14,7 @@ import {tap} from 'rxjs/operators';
 })
 export class RouteMyroutesComponent implements OnInit, AfterViewInit {
   @Input() receivedRoutes: RouteComplete[];
+  @Input() isGuestUser: boolean;
   @Output() routeChanged: EventEmitter<RouteComplete[]> = new EventEmitter<RouteComplete[]>();
   @Output() currentChildRoute: EventEmitter<RouteComplete> = new EventEmitter<RouteComplete>();
   @ViewChild(RouteDetailComponent) detailsComponent: RouteDetailComponent;
@@ -70,7 +71,9 @@ export class RouteMyroutesComponent implements OnInit, AfterViewInit {
   onRouteChanged(event) {
     console.log('THE ROUTE HAS BEEN CHANGED IN MY ROUTES');
     this.currentRoute = event;
-    this.isOwner = this.currentRoute.owner.id === JSON.parse(sessionStorage.getItem('currentUser')).id;
+    if (!this.isGuestUser) {
+      this.isOwner = this.currentRoute.owner.id === JSON.parse(sessionStorage.getItem('currentUser')).id;
+    }
     console.log(this.currentRoute.communicationRequests);
     this.requestsDataSource = new MatTableDataSource<CommunicationRequest>(this.currentRoute.communicationRequests);
     console.log(this.requestsDataSource.paginator);

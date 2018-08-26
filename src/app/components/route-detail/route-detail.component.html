@@ -31,7 +31,7 @@
             <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
             <mat-cell *matCellDef="let row" (click)="onRouteClick(row)">
               <div class="button-group">
-                <button mat-icon-button color="primary" class="actionButton" *ngIf="!isMyRoutes"
+                <button mat-icon-button color="primary" class="actionButton" *ngIf="!isMyRoutes && !isGuestUser"
                         (click)="addPassengerToRoute(row)" matTooltip="Enlist in route">
                   <mat-icon>add</mat-icon>
                 </button>

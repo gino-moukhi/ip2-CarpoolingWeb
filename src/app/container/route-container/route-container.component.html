@@ -1,10 +1,10 @@
 <h1>Route finder</h1>
 <mat-tab-group [selectedIndex]="1" (selectedIndexChange)="allRoutesTabClicked($event)">
   <mat-tab label="My routes">
-    <app-route-myroutes [receivedRoutes]="myRoutes" (routeChanged)="onRoutesChanged($event)" (currentChildRoute)="onRouteChanged($event)"></app-route-myroutes>
+    <app-route-myroutes [receivedRoutes]="myRoutes" [isGuestUser]="isGuestUser" (routeChanged)="onRoutesChanged($event)" (currentChildRoute)="onRouteChanged($event)"></app-route-myroutes>
   </mat-tab>
   <mat-tab label="All routes">
-    <app-route-detail [receivedRoutes]="allReceivedRoutes" (routeChanged)="onRoutesChanged($event)" (currentChildRoute)="onRouteChanged($event)"></app-route-detail>
+    <app-route-detail [receivedRoutes]="allReceivedRoutes" [isGuestUser]="isGuestUser" (routeChanged)="onRoutesChanged($event)" (currentChildRoute)="onRouteChanged($event)"></app-route-detail>
   </mat-tab>
   <mat-tab label="Search routes">
     <app-route-searcher (routeChanged)="onRoutesChanged($event)" (currentChildRoute)="onRouteChanged($event)"></app-route-searcher>

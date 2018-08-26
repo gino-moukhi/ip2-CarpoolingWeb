@@ -12,9 +12,7 @@ import {UserService} from '../../services/user.service';
 })
 export class MainComponent implements OnInit {
   currentUser: User;
-  /*profile: boolean;
-  carpool: boolean;
-  routeFinder: boolean;*/
+  guestUser: boolean;
   page: string;
 
   isHandset$: Observable<boolean> = this.breakpointObserver.observe(Breakpoints.Handset)
@@ -26,13 +24,17 @@ export class MainComponent implements OnInit {
   }
 
   ngOnInit() {
-    const loginUser = JSON.parse(sessionStorage.getItem('loginUser'));
-    console.log(loginUser);
-    const user = this.userService.getUserById(loginUser.id).subscribe(value => {
-      console.log(value);
-      sessionStorage.setItem('currentUser', JSON.stringify(value));
-    });
+    const guestUserString = sessionStorage.getItem('guestUser');
+    this.guestUser = guestUserString === 'true';
 
+    if (!this.guestUser) {
+      const loginUser = JSON.parse(sessionStorage.getItem('loginUser'));
+      console.log(loginUser);
+      const user = this.userService.getUserById(loginUser.id).subscribe(value => {
+        console.log(value);
+        sessionStorage.setItem('currentUser', JSON.stringify(value));
+      });
+    }
   }
 
   profileClick() {
@@ -40,8 +42,8 @@ export class MainComponent implements OnInit {
 
   }
 
-  carpoolClick() {
-    this.page = 'carpool';
+  routeCreatorClick() {
+    this.page = 'routeCreator';
   }
 
   routeFinderClick() {

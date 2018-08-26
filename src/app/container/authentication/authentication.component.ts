@@ -1,7 +1,5 @@
 import {Component, OnInit} from '@angular/core';
-import {UserService} from '../../services/user.service';
-import {User} from '../../models/user/user';
-import {VehicleType} from '../../models/user/vehicle-type.enum';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-authentication',
@@ -11,7 +9,7 @@ import {VehicleType} from '../../models/user/vehicle-type.enum';
 export class AuthenticationComponent implements OnInit {
   selectedIndex: number;
 
-  constructor() {
+  constructor(private router: Router) {
   }
 
   ngOnInit() {
@@ -21,5 +19,10 @@ export class AuthenticationComponent implements OnInit {
     if (event === true) {
       this.selectedIndex = 0;
     }
+  }
+
+  guestLogin() {
+    sessionStorage.setItem('guestUser', 'true');
+    this.router.navigateByUrl('/main');
   }
 }
