@@ -66,6 +66,7 @@ export class RouteDetailComponent implements OnInit, OnChanges {
   passengerDisplayColumns: string[];
   private trafficLayer: google.maps.TrafficLayer;
   private currentMapInstance: google.maps.Map;
+  home: RouteLocation;
 
   constructor(private dialog: MatDialog, private routeService: RouteService, private communicationService: CommunicationService) {
   }
@@ -76,6 +77,7 @@ export class RouteDetailComponent implements OnInit, OnChanges {
     }
     console.log('RECEIVED ON INIT');
     console.log(this.receivedRoutes);
+    this.home = new RouteLocation('', 0, 0);
   }
 
   ngOnChanges() {
@@ -236,7 +238,13 @@ export class RouteDetailComponent implements OnInit, OnChanges {
       mapTypeIds: ['roadmap', 'terrain', 'satellite', 'hybrid']
     };
     this.currentMapInstance = mapInstance;
+    this.setCurrentPosition();
     this.trafficLayer = new google.maps.TrafficLayer();
+  }
+
+  dateToStringConverter(dateTime) {
+    const departure = new Date(dateTime);
+    return departure.toUTCString();
   }
 
   private initWaypointsTable() {
@@ -256,6 +264,14 @@ export class RouteDetailComponent implements OnInit, OnChanges {
       this.trafficLayer.setMap(this.currentMapInstance);
     } else {
       this.trafficLayer.setMap(null);
+    }
+  }
+
+  private setCurrentPosition() {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.home = new RouteLocation('', position.coords.latitude, position.coords.longitude);
+      });
     }
   }
 

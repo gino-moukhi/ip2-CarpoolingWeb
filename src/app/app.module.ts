@@ -24,6 +24,7 @@ import {MainComponent} from './container/main/main.component';
 import {RouteSearcherComponent} from './components/route-searcher/route-searcher.component';
 import {RouteContainerComponent} from './container/route-container/route-container.component';
 import { RouteEditDialogComponent } from './components/route-edit-dialog/route-edit-dialog.component';
+import { EmptyStateComponent } from './components/empty-state/empty-state.component';
 
 @NgModule({
   declarations: [
@@ -40,6 +41,7 @@ import { RouteEditDialogComponent } from './components/route-edit-dialog/route-e
     MainComponent,
     RouteSearcherComponent,
     RouteEditDialogComponent,
+    EmptyStateComponent,
   ],
   imports: [
     BrowserModule,

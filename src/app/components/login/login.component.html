@@ -11,6 +11,6 @@
   </div>
   <button mat-raised-button type="submit" color="primary">Login</button>
   <div *ngIf="invalidLogin" class="error">
-    <div>Invalid credentials.</div>
+    <div>{{errorMessage}}</div>
   </div>
 </form>

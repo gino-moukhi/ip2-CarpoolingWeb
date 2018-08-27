@@ -67,7 +67,7 @@ export class RouteEditDialogComponent implements OnInit {
     this.routeService.updateRoute(updatedRoute).subscribe(value => {
       this.receivedRoute = value;
       console.log(this.receivedRoute);
-      this.dialogRef.close();
+      this.dialogRef.close(this.receivedRoute);
     });
   }
 

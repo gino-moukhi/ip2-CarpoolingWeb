@@ -58,8 +58,11 @@
     </mat-card-content>
   </mat-card>
 
-  <div *ngIf="receivedRoutes">
+  <div *ngIf="receivedRoutes.length !== 0">
     <app-route-detail [receivedRoutes]="receivedRoutes" [isMyRoutes]="true" (routeChanged)="onRoutesChanged($event)"
                       (currentChildRoute)="onRouteChanged($event)"></app-route-detail>
+  </div>
+  <div *ngIf="receivedRoutes.length == 0">
+    <app-empty-state [message]="emptyRoutesMessage"></app-empty-state>
   </div>
 </div>

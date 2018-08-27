@@ -20,6 +20,7 @@ export class RouteMyroutesComponent implements OnInit, AfterViewInit {
   @ViewChild(RouteDetailComponent) detailsComponent: RouteDetailComponent;
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  emptyRoutesMessage: string;
   allRoutes: RouteComplete[];
   currentRoute: RouteComplete;
   acceptStatus = CommunicationRequestStatus.ACCEPTED;
@@ -31,6 +32,7 @@ export class RouteMyroutesComponent implements OnInit, AfterViewInit {
 
 
   constructor(private communicationService: CommunicationService) {
+    this.emptyRoutesMessage = 'It looks like you have no routes at the moment. Go join one or create one for others to use.';
   }
 
   ngOnInit() {

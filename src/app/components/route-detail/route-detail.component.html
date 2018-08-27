@@ -20,7 +20,7 @@
           </ng-container>
           <ng-container matColumnDef="departure">
             <mat-header-cell *matHeaderCellDef mat-sort-header>Departure time</mat-header-cell>
-            <mat-cell *matCellDef="let row" (click)="onRouteClick(row)">{{row.departure}}</mat-cell>
+            <mat-cell *matCellDef="let row" (click)="onRouteClick(row)">{{dateToStringConverter(row.departure)}}</mat-cell>
           </ng-container>
           <ng-container matColumnDef="waypoints">
             <mat-header-cell *matHeaderCellDef mat-sort-header># Waypoints</mat-header-cell>
@@ -31,7 +31,7 @@
             <mat-header-cell *matHeaderCellDef>Actions</mat-header-cell>
             <mat-cell *matCellDef="let row" (click)="onRouteClick(row)">
               <div class="button-group">
-                <button mat-icon-button color="primary" class="actionButton" *ngIf="!isMyRoutes && !isGuestUser"
+                <button mat-icon-button color="primary" class="actionButton" *ngIf="!isMyRoutes && row.owner.id !== currentUser.id && !isGuestUser"
                         (click)="addPassengerToRoute(row)" matTooltip="Enlist in route">
                   <mat-icon>add</mat-icon>
                 </button>
@@ -142,6 +142,10 @@
 <div class="horizontal-card-list">
   <div class="map-container" *ngIf="currentRoute">
     <agm-map [scrollwheel]="false" (mapReady)="onMapReady($event)">
+      <agm-marker [latitude]="home.lat" [longitude]="home.lng" [iconUrl]="'http://maps.google.com/mapfiles/ms/icons/green-dot.png'"
+                  (mouseOver)="info.open()" (mouseOut)="info.close()">
+        <agm-info-window #info [isOpen]="false">You are here</agm-info-window>
+      </agm-marker>
       <agm-direction #myDirection [origin]="currentRoute.routeDefinition.origin"
                      [destination]="currentRoute.routeDefinition.destination"
                      [waypoints]="currentWaypoints">

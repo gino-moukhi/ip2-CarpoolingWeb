@@ -89,6 +89,7 @@
   </button>
   <button mat-raised-button class="actionButton" color="primary" (click)="findRoute()">Find route</button>
 </div>
-<app-route-detail *ngIf="searchRoutes" [receivedRoutes]="searchRoutes"
+<app-route-detail *ngIf="searchRoutes.length !== 0" [receivedRoutes]="searchRoutes"
                   (routeChanged)="onRoutesChanged($event)"
                   (currentChildRoute)="onRouteChanged($event)"></app-route-detail>
+<app-empty-state *ngIf="searchRoutes.length == 0 && sendClicked" [message]="emptySearchRouteMessage"></app-empty-state>

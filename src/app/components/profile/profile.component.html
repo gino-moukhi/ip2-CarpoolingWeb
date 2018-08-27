@@ -149,9 +149,10 @@
 
   <div id="actionButtonContainer">
     <button mat-raised-button class="actionButton" [color]="isReading?'primary':'warn'" (click)="enableEditing()">
-      {{isReading?'Editprofile':'Cancel editing'}}
+      {{isReading?'Edit profile':'Cancel editing'}}
     </button>
     <button mat-raised-button class="actionButton" color="primary" (click)="updateUser()" type="submit" *ngIf="!isReading">Update</button>
+    <br/>
     <p class="largerP">{{message}}</p>
   </div>
 </form>

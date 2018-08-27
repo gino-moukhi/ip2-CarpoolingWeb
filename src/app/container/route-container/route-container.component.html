@@ -4,7 +4,8 @@
     <app-route-myroutes [receivedRoutes]="myRoutes" [isGuestUser]="isGuestUser" (routeChanged)="onRoutesChanged($event)" (currentChildRoute)="onRouteChanged($event)"></app-route-myroutes>
   </mat-tab>
   <mat-tab label="All routes">
-    <app-route-detail [receivedRoutes]="allReceivedRoutes" [isGuestUser]="isGuestUser" (routeChanged)="onRoutesChanged($event)" (currentChildRoute)="onRouteChanged($event)"></app-route-detail>
+    <app-empty-state *ngIf="allReceivedRoutes.length == 0" [message]="emptyStateMessage"></app-empty-state>
+    <app-route-detail *ngIf="allReceivedRoutes.length !== 0" [receivedRoutes]="allReceivedRoutes" [isGuestUser]="isGuestUser" (routeChanged)="onRoutesChanged($event)" (currentChildRoute)="onRouteChanged($event)"></app-route-detail>
   </mat-tab>
   <mat-tab label="Search routes">
     <app-route-searcher (routeChanged)="onRoutesChanged($event)" (currentChildRoute)="onRouteChanged($event)"></app-route-searcher>

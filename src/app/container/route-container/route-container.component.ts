@@ -16,12 +16,14 @@ export class RouteContainerComponent implements OnInit {
   // currentRouteUser: User;
   myRoutes: RouteComplete[];
   defaultTabIndex: number;
+  emptyStateMessage: string;
 
   constructor(private routeService: RouteService) {
     this.allRoutes = [];
     this.allReceivedRoutes = [];
     this.myRoutes = [];
     this.defaultTabIndex = 1; // index to show all routes
+    this.emptyStateMessage = 'Looks like nobody has created a route, will you be the first?'
   }
 
   ngOnInit() {

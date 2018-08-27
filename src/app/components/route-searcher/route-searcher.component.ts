@@ -22,8 +22,12 @@ export class RouteSearcherComponent implements OnInit {
   simpleSearchForm: FormGroup;
   advancedSearchForm: FormGroup;
   advancedSearch = false;
+  emptySearchRouteMessage: string;
+  sendClicked: boolean;
 
   constructor(private fb: FormBuilder, private mapsAPILoader: MapsAPILoader, private ngZone: NgZone, private routeService: RouteService) {
+    this.searchRoutes = [];
+    this.emptySearchRouteMessage = 'Looks like your search did not find any results. Try a bigger radius or different locations.';
   }
 
   ngOnInit() {
@@ -89,6 +93,7 @@ export class RouteSearcherComponent implements OnInit {
   }
 
   findRoute() {
+    this.sendClicked = true;
     console.log(this.simpleSearchForm.controls.origin);
     console.log(this.simpleSearchForm.controls.destination);
     console.log(this.simpleSearchForm.controls.distance);
