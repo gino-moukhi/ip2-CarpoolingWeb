@@ -1,12 +1,17 @@
 <div id="body">
-  <img src="https://desktopwalls.net/wp-content/uploads/2014/06/New%20York%20City%20Yellow%20Taxi%20Cab%20Free%20Wallpaper%20HD.jpg">
+  <img src="assets/images/New York City Yellow Taxi Cab Free Wallpaper HD.jpg">
   <div id="componentHolder">
+    <h1>Welcome to Carpool.io</h1>
+    <h3>Because who needs taxi's</h3>
     <mat-tab-group [dynamicHeight]="true" [(selectedIndex)]="selectedIndex">
       <mat-tab label="Login">
         <app-login></app-login>
       </mat-tab>
       <mat-tab label="Register">
         <app-register (switchToLogin)="switchTab($event)"></app-register>
+      </mat-tab>
+      <mat-tab label="I am a guest">
+        <button mat-raised-button color="primary" (click)="guestLogin()">Continue as guest</button>
       </mat-tab>
     </mat-tab-group>
   </div>

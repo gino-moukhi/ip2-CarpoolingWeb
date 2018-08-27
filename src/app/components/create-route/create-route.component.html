@@ -90,8 +90,9 @@
     <div class="map-container">
       <agm-map [latitude]="home.lat" [longitude]="home.lng" [zoom]="17" [scrollwheel]="false"
                (mapReady)="onMapReady($event)">
-        <agm-marker [latitude]="home.lat" [longitude]="home.lng">
-          <agm-info-window [isOpen]="true">You are here</agm-info-window>
+        <agm-marker [latitude]="home.lat" [longitude]="home.lng" [iconUrl]="'http://maps.google.com/mapfiles/ms/icons/green-dot.png'"
+                    (mouseOver)="info.open()" (mouseOut)="info.close()">
+          <agm-info-window #info [isOpen]="false">You are here</agm-info-window>
         </agm-marker>
         <agm-direction *ngIf="isCompleteRoute && routeVisible"
                        [origin]="routeDefinition.origin"

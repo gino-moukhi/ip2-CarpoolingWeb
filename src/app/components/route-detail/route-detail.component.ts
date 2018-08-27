@@ -45,6 +45,7 @@ export interface CustomDataTable {
 export class RouteDetailComponent implements OnInit, OnChanges {
   @Input() receivedRoutes: RouteComplete[];
   @Input() isMyRoutes: boolean;
+  @Input() isGuestUser: boolean;
   @Output() routeChanged: EventEmitter<RouteComplete[]> = new EventEmitter<RouteComplete[]>();
   @Output() currentChildRoute: EventEmitter<RouteComplete> = new EventEmitter<RouteComplete>();
   @ViewChild(MatPaginator) paginator: MatPaginator;
@@ -58,7 +59,6 @@ export class RouteDetailComponent implements OnInit, OnChanges {
   currentRouteDataSource: MatTableDataSource<RouteComplete>;
   allRoutesDisplayedColumns: string[] = ['origin', 'destination', 'departure', 'waypoints', 'actions'];
   generalRouteInfoDisplayedColumns: string[] = ['owner', 'route', 'vehicle', 'passengers'];
-  // routeDetailsInfoDisplayedColumns: string[] = ['origin', 'destination', 'routeType', 'departure', 'waypoints'];
 
   waypointDataSource: MatTableDataSource<RouteLocation>;
   waypointDisplayColumns: string[];
@@ -66,14 +66,18 @@ export class RouteDetailComponent implements OnInit, OnChanges {
   passengerDisplayColumns: string[];
   private trafficLayer: google.maps.TrafficLayer;
   private currentMapInstance: google.maps.Map;
+  home: RouteLocation;
 
   constructor(private dialog: MatDialog, private routeService: RouteService, private communicationService: CommunicationService) {
   }
 
   ngOnInit() {
-    this.currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    if (!this.isGuestUser) {
+      this.currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+    }
     console.log('RECEIVED ON INIT');
     console.log(this.receivedRoutes);
+    this.home = new RouteLocation('', 0, 0);
   }
 
   ngOnChanges() {
@@ -234,7 +238,13 @@ export class RouteDetailComponent implements OnInit, OnChanges {
       mapTypeIds: ['roadmap', 'terrain', 'satellite', 'hybrid']
     };
     this.currentMapInstance = mapInstance;
+    this.setCurrentPosition();
     this.trafficLayer = new google.maps.TrafficLayer();
+  }
+
+  dateToStringConverter(dateTime) {
+    const departure = new Date(dateTime);
+    return departure.toUTCString();
   }
 
   private initWaypointsTable() {
@@ -254,6 +264,14 @@ export class RouteDetailComponent implements OnInit, OnChanges {
       this.trafficLayer.setMap(this.currentMapInstance);
     } else {
       this.trafficLayer.setMap(null);
+    }
+  }
+
+  private setCurrentPosition() {
+    if ('geolocation' in navigator) {
+      navigator.geolocation.getCurrentPosition((position) => {
+        this.home = new RouteLocation('', position.coords.latitude, position.coords.longitude);
+      });
     }
   }
 

@@ -13,6 +13,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   submitted = false;
   invalidLogin = false;
+  errorMessage: string;
 
   constructor(private formBuilder: FormBuilder, private router: Router, private authService: AuthenticationService) {
   }
@@ -35,10 +36,17 @@ export class LoginComponent implements OnInit {
       console.log(credentials);
       console.log(loginUser);
       this.authService.login(loginUser).subscribe(user => {
-        console.log('user is logged in');
-        sessionStorage.setItem('loginUser', JSON.stringify(user));
-        this.router.navigateByUrl('/main');
-      });
+          console.log('RECEIVED LOGIN VALUE');
+          console.log(user);
+          sessionStorage.setItem('loginUser', JSON.stringify(user));
+          sessionStorage.setItem('guestUser', 'false');
+          this.router.navigateByUrl('/main');
+        },
+        error => {
+          console.log(error.error.message);
+          this.errorMessage = error.error.message;
+          this.invalidLogin = true;
+        });
     }
   }
 }

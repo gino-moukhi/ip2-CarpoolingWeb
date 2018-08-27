@@ -13,6 +13,8 @@ import {VehicleType} from '../../models/user/vehicle-type.enum';
   styleUrls: ['./profile.component.css']
 })
 export class ProfileComponent implements OnInit {
+  @Output() isIncompleteProfile: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() fieldsToUpdate: EventEmitter<string[]> = new EventEmitter<string[]>();
   profileForm: FormGroup;
   currentUser: User;
   isReading = true;
@@ -85,10 +87,16 @@ export class ProfileComponent implements OnInit {
           this.message = 'Your details were updated successfully';
           this.isReading = true;
           this.profileForm.disable();
+          this.determenIfUserHasEmptyFields(this.currentUser);
           sessionStorage.setItem('currentUser', JSON.stringify(this.currentUser));
         },
-        error => this.message = 'Oops something went wrong while updating your details. Try again later!'
+        error => {
+          this.message = 'Something went wrong while updating your details.';
+          console.log(error.error.message);
+        }
       );
+    } else {
+      this.message = 'Form is invalid. (check if gender is chosen)';
     }
   }
 
@@ -138,7 +146,25 @@ export class ProfileComponent implements OnInit {
     return newUser;
   }
 
-  log(event) {
-    console.log(event);
+  private determenIfUserHasEmptyFields(user: User) {
+    const emptyFields = [];
+    for (const element in user) {
+      if (element) {
+        for (const el in user[element]) {
+          if (element === 'name' || element === 'address' || element === 'vehicle') {
+            if (!user[element][el]) {
+              emptyFields.push(el);
+            }
+          }
+        }
+      }
+    }
+    if (emptyFields.length !== 0) {
+      this.isIncompleteProfile.emit(true);
+      this.fieldsToUpdate.emit(emptyFields);
+    } else {
+      this.isIncompleteProfile.emit(false);
+      this.fieldsToUpdate.emit(emptyFields);
+    }
   }
 }
